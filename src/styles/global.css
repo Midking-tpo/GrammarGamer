@@ -31,6 +31,9 @@ body {
   font-family: 'Hiragino Maru Gothic ProN', 'Hiragino Sans', 'Noto Sans JP', system-ui,
     sans-serif;
   line-height: 1.6;
+  /* スマホでの意図しない横スクロール・文字自動拡大を防ぐ */
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
 }
 
 button {
@@ -41,7 +44,9 @@ button {
 .screen {
   max-width: 560px;
   margin: 0 auto;
-  padding: 16px 16px 48px;
+  /* ノッチ端末のセーフエリアぶんだけ左右・下に余白を足す */
+  padding: calc(16px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right))
+    calc(48px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left));
   min-height: 100dvh;
 }
 
@@ -448,6 +453,9 @@ button {
   font-size: 16px;
   font-weight: 700;
   transition: transform 0.1s;
+  /* 長い英文の選択肢でもはみ出さず折り返す */
+  overflow-wrap: anywhere;
+  min-width: 0;
 }
 
 .choice-btn:active:not(:disabled) {
@@ -713,4 +721,67 @@ button {
   font-size: 12px;
   color: var(--muted);
   margin: 4px 0 0;
+}
+
+/* ===== 小さめのスマホ（〜360px, iPhone SE など）向け微調整 ===== */
+@media (max-width: 360px) {
+  .screen {
+    padding-left: calc(12px + env(safe-area-inset-left));
+    padding-right: calc(12px + env(safe-area-inset-right));
+  }
+
+  .app-title {
+    font-size: 24px;
+  }
+
+  .choices {
+    gap: 6px;
+  }
+
+  .choice-btn {
+    font-size: 15px;
+    padding: 11px 6px;
+  }
+
+  .prompt {
+    font-size: 16px;
+  }
+
+  .sentence {
+    font-size: 18px;
+  }
+
+  .word-card {
+    font-size: 15px;
+    padding: 8px 11px;
+  }
+
+  .grade-tab {
+    font-size: 13px;
+    padding: 9px 2px;
+  }
+
+  .home-actions .btn {
+    font-size: 13px;
+  }
+
+  .fighter-emoji {
+    font-size: 44px;
+  }
+
+  .result-title {
+    font-size: 26px;
+  }
+
+  .stat {
+    min-width: 74px;
+    padding: 10px 14px;
+  }
+}
+
+/* ===== 横向き・タブレット以上でも中央寄せの1カラムを維持 ===== */
+@media (min-width: 620px) {
+  .badge-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
