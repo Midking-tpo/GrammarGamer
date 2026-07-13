@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { equipmentById } from '../../data/equipment';
 import { badgeById } from '../../game/badges';
 import {
+  COMBO_GOLD_BONUS_MULTIPLIER,
   SHOP_INTERVAL,
   attackPrice,
   defensePrice,
@@ -34,6 +35,7 @@ function loadRun(): DungeonRun | null {
 interface VictoryInfo {
   floorCleared: number;
   goldGained: number;
+  comboBonus: boolean;
   noMiss: boolean;
   shopNext: boolean;
 }
@@ -119,7 +121,7 @@ export function DungeonScreen({ onHome }: Props) {
     const next: DungeonRun = {
       ...merged,
       hp: o.playerHp,
-      combo: o.combo,
+      combo: 0, // コンボは戦闘毎にリセットする（毎戦闘の10コンボ到達を意味あるものにするため）
       gold: run.gold + o.goldGained,
       goldEarned: run.goldEarned + o.goldGained,
       battlesCleared,
@@ -141,6 +143,7 @@ export function DungeonScreen({ onHome }: Props) {
       info: {
         floorCleared: run.floor,
         goldGained: o.goldGained,
+        comboBonus: o.comboBonus,
         noMiss: o.noMiss,
         shopNext,
       },
@@ -159,11 +162,11 @@ export function DungeonScreen({ onHome }: Props) {
 
   const shopHandlers = {
     onBuyAttack: () =>
-      buy(attackPrice(run.atkBought), (r) => ({ atk: r.atk + 2, atkBought: r.atkBought + 1 })),
+      buy(attackPrice(run.atkBought), (r) => ({ atk: r.atk + 20, atkBought: r.atkBought + 1 })),
     onBuyDefense: () =>
       buy(defensePrice(run.defBought), (r) => ({
-        maxHp: r.maxHp + 5,
-        hp: r.hp + 5,
+        maxHp: r.maxHp + 50,
+        hp: r.hp + 50,
         defBought: r.defBought + 1,
       })),
     onBuyHeal: () =>
@@ -213,6 +216,9 @@ export function DungeonScreen({ onHome }: Props) {
             </div>
           </div>
           {view.info.noMiss && <p className="victory-note">✨ ノーミス勝利！</p>}
+          {view.info.comboBonus && (
+            <p className="victory-note">⭐ 10コンボ達成！ ゴールド{COMBO_GOLD_BONUS_MULTIPLIER}倍！</p>
+          )}
           <div className="result-actions">
             <button className="btn primary" onClick={() => proceedFromVictory(view.info)} autoFocus>
               {view.info.shopNext ? '🛒 SHOPへ' : `⬇️ 地下${run.floor}階へ`}

@@ -105,13 +105,13 @@ export interface EquipmentDef {
 /** 進行中のラン（別キーで localStorage に保存、敗北でクリア） */
 export interface DungeonRun {
   floor: number; // 現在の階（1開始）
-  battlesCleared: number; // 勝利数（SHOP判定 = %3）
+  battlesCleared: number; // 勝利数（SHOP判定 = %2）
   hp: number;
   maxHp: number;
   atk: number;
   gold: number;
   goldEarned: number; // ラン通算獲得G（統計用）
-  combo: number; // ラン内で継続するコンボ（ミスで0）
+  combo: number; // 次の戦闘開始時のコンボ（戦闘毎に0へリセットされるため常に0）
   equipment: string[]; // EquipmentDef.id（最大3）
   atkBought: number;
   defBought: number;

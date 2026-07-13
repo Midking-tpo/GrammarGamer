@@ -83,7 +83,7 @@ export const EQUIPMENT: EquipmentDef[] = [
     rarity: 'rare',
     price: 150,
     icon: '🔫',
-    description: '3秒以内に正解した場合、その攻撃を2回行う',
+    description: '2秒以内に正解した場合、その攻撃を2回行う',
   },
   {
     id: 'r-tuna',
@@ -140,7 +140,7 @@ export const EQUIPMENT: EquipmentDef[] = [
     rarity: 'super',
     price: 200,
     icon: '🐚',
-    description: '10コンボ以上コンボしている時、与えるすべてのダメージは100倍になる',
+    description: '10コンボ以上コンボしている時、与えるすべてのダメージは20倍になる',
   },
   // ===== レジェンド =====
   {
@@ -149,7 +149,7 @@ export const EQUIPMENT: EquipmentDef[] = [
     rarity: 'legend',
     price: 500,
     icon: '💧',
-    description: 'ミスをしていない間、受けるすべてのダメージが1になる。ミスをすると消えてしまう',
+    description: 'ミスをしていない間、受けるすべてのダメージが10になる。ミスをすると消えてしまう',
   },
 ];
 

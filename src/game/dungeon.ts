@@ -7,16 +7,16 @@ export type Rng = () => number;
 // ===== 基本パラメータ =====
 
 export const DUNGEON_START = {
-  hp: 10,
-  maxHp: 10,
-  atk: 1,
+  hp: 150,
+  maxHp: 150,
+  atk: 10,
   gold: 0,
 } as const;
 
 /** 敵カウントの基準値（秒・全階固定） */
 export const COUNT_MAX = 8;
 /** SHOPが出現する戦闘間隔 */
-export const SHOP_INTERVAL = 3;
+export const SHOP_INTERVAL = 2;
 /** そうびの保有上限 */
 export const EQUIPMENT_LIMIT = 3;
 
@@ -47,10 +47,16 @@ export function newRun(): DungeonRun {
 
 // ===== 敵スケーリング =====
 
+/** 敵HPの加速係数。深層ほど撃破に必要な正解数が増えるよう、階数の2乗で上乗せする(要プレイテスト調整)。 */
+export const ENEMY_HP_ACCEL = 0.08;
+/** 敵ATKの基準値・上昇率(緩やかな線形。コンボが戦闘毎リセットになったため急激な上昇は不要)。 */
+export const ENEMY_ATK_BASE = 10;
+export const ENEMY_ATK_SLOPE = 0.2;
+
 export function enemyStats(floor: number): { hp: number; atk: number; countMax: number } {
   return {
-    hp: 2 * floor + 2,
-    atk: 1 + Math.floor((floor - 1) / 3),
+    hp: Math.round(10 * (2 * floor + 2) + ENEMY_HP_ACCEL * (floor - 1) ** 2),
+    atk: Math.round(ENEMY_ATK_BASE + ENEMY_ATK_SLOPE * (floor - 1)),
     countMax: COUNT_MAX,
   };
 }
@@ -69,6 +75,17 @@ export function goldReward(floor: number, rng: Rng = Math.random): number {
   const min = 2 + floor;
   const max = 4 + 2 * floor;
   return min + Math.floor(rng() * (max - min + 1));
+}
+
+/** その戦闘で到達した最大コンボ数がこの値以上ならゴールド報酬を増額する */
+export const COMBO_GOLD_BONUS_THRESHOLD = 10;
+export const COMBO_GOLD_BONUS_MULTIPLIER = 3;
+
+/** 10コンボ到達（戦闘毎リセットの中で稼ぐ長期的メリット）でゴールド報酬を増額する */
+export function applyComboGoldBonus(gold: number, maxComboInBattle: number): number {
+  return maxComboInBattle >= COMBO_GOLD_BONUS_THRESHOLD
+    ? Math.round(gold * COMBO_GOLD_BONUS_MULTIPLIER)
+    : gold;
 }
 
 // ===== SHOP価格 =====
@@ -158,11 +175,11 @@ export function computeAttack(ctx: AttackContext): AttackResult {
   if (has('s-drone')) hit += ctx.atk * 0.5 * ctx.combo;
   if (has('r-poop') && ctx.isFirstAttackOfBattle) hit *= 2;
   if (ctx.iburiActive) hit *= 2;
-  if (has('s-nautilus') && ctx.combo >= 10) hit *= 100;
+  if (has('s-nautilus') && ctx.combo >= 10) hit *= 20;
   const rounded = Math.max(0, Math.round(hit));
 
   const hits =
-    has('r-pistol') && ctx.answerSec <= 3 ? [rounded, rounded] : [rounded];
+    has('r-pistol') && ctx.answerSec <= 2 ? [rounded, rounded] : [rounded];
 
   let radishBonus = 0;
   let radishTriggered = false;
@@ -214,7 +231,7 @@ export function computeIncoming(ctx: DefenseContext): DefenseResult {
     if (ctx.cause === 'miss') {
       waterLost = true; // ミスした瞬間に消える（このダメージは通常計算）
     } else if (ctx.noMissSoFar) {
-      const damage = 1;
+      const damage = DUNGEON_START.atk; // 基礎ATKと同じ基準でスケールする固定被ダメ
       const reflect = has('n-candy') ? Math.round(damage * 0.25) : 0;
       return { damage, reflect, coinUsed: false, waterLost: false };
     }

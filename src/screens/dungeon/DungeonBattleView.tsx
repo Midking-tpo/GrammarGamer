@@ -5,6 +5,8 @@ import { QuestionPanel } from '../../components/QuestionPanel';
 import { equipmentById } from '../../data/equipment';
 import { dungeonQuestionPool } from '../../data/questions';
 import {
+  COMBO_GOLD_BONUS_THRESHOLD,
+  applyComboGoldBonus,
   computeAttack,
   computeIncoming,
   enemyStats,
@@ -22,6 +24,7 @@ const DUNGEON_MONSTERS = ['👹', '🐲', '💀', '🧛', '🐉', '👺', '🦑'
 export interface BattleOutcome {
   won: boolean;
   goldGained: number;
+  comboBonus: boolean;
   noMiss: boolean;
   jubutsuDeath: boolean;
   playerHp: number;
@@ -121,12 +124,14 @@ export function DungeonBattleView({ run, onOutcome, onQuit }: Props) {
     if (flags.current.over) return;
     flags.current.over = true;
     playClear();
-    const gold = goldReward(run.floor);
+    const comboBonus = maxCombo >= COMBO_GOLD_BONUS_THRESHOLD;
+    const gold = applyComboGoldBonus(goldReward(run.floor), maxCombo);
     const jubutsuDeath = jubutsuBackfire(equipment);
     if (jubutsuDeath) playLose();
     onOutcome({
       won: true,
       goldGained: gold,
+      comboBonus,
       noMiss: flags.current.noMiss,
       jubutsuDeath,
       playerHp: Math.max(0, playerHp),
@@ -145,6 +150,7 @@ export function DungeonBattleView({ run, onOutcome, onQuit }: Props) {
     onOutcome({
       won: false,
       goldGained: 0,
+      comboBonus: false,
       noMiss: false,
       jubutsuDeath: false,
       playerHp: 0,
@@ -182,6 +188,9 @@ export function DungeonBattleView({ run, onOutcome, onQuit }: Props) {
       }
       if (attack.jubutsuUsed) pushEvent('🧿 とっきゅうじゅぶつが敵をのみこんだ！');
       if (attack.hits.length > 1) pushEvent('🔫 はやうち！ 2回攻撃');
+      if (newCombo === COMBO_GOLD_BONUS_THRESHOLD) {
+        pushEvent('⭐ 10コンボ達成！ ゴールドボーナス確定！');
+      }
       eHp -= attack.total;
       setEnemyHp(eHp);
       setLastDamage(attack.total);

@@ -48,13 +48,13 @@ export function DungeonShopView({
         <button className="shop-item" onClick={onBuyAttack} disabled={run.gold < atkCost}>
           <span className="shop-item-icon">⚔️</span>
           <span className="shop-item-name">こうげきアップグレード</span>
-          <span className="shop-item-desc">攻撃力 +2</span>
+          <span className="shop-item-desc">攻撃力 +20</span>
           <span className="shop-item-price">{atkCost}G</span>
         </button>
         <button className="shop-item" onClick={onBuyDefense} disabled={run.gold < defCost}>
           <span className="shop-item-icon">❤️</span>
           <span className="shop-item-name">ぼうぎょアップグレード</span>
-          <span className="shop-item-desc">最大HP +5</span>
+          <span className="shop-item-desc">最大HP +50</span>
           <span className="shop-item-price">{defCost}G</span>
         </button>
         <button

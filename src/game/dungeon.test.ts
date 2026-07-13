@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { EQUIPMENT } from '../data/equipment';
 import {
+  applyComboGoldBonus,
   attackPrice,
   comboMultiplier,
   computeAttack,
@@ -47,14 +48,20 @@ function defenseCtx(overrides: Partial<DefenseContext> = {}): DefenseContext {
 }
 
 describe('enemyStats', () => {
-  it('階が進むほどHP/ATKが増える', () => {
-    expect(enemyStats(1)).toEqual({ hp: 4, atk: 1, countMax: 8 });
-    expect(enemyStats(4)).toEqual({ hp: 10, atk: 2, countMax: 8 });
-    expect(enemyStats(10)).toEqual({ hp: 22, atk: 4, countMax: 8 });
+  it('階が進むほどHP/ATKが増える（ATKは緩やかな線形、HPは加速項つき）', () => {
+    expect(enemyStats(1)).toEqual({ hp: 40, atk: 10, countMax: 8 });
+    expect(enemyStats(4)).toEqual({ hp: 101, atk: 11, countMax: 8 });
+    expect(enemyStats(10)).toEqual({ hp: 226, atk: 12, countMax: 8 });
     for (let f = 1; f < 30; f++) {
       expect(enemyStats(f + 1).hp).toBeGreaterThan(enemyStats(f).hp);
       expect(enemyStats(f + 1).atk).toBeGreaterThanOrEqual(enemyStats(f).atk);
     }
+  });
+
+  it('加速項により、HPの増加ペースが階を追うごとに速くなる（線形ではない）', () => {
+    const diffEarly = enemyStats(2).hp - enemyStats(1).hp;
+    const diffLate = enemyStats(30).hp - enemyStats(29).hp;
+    expect(diffLate).toBeGreaterThan(diffEarly);
   });
 });
 
@@ -158,16 +165,18 @@ describe('computeAttack', () => {
     expect(computeAttack(attackCtx({ iburiActive: true })).total).toBe(20);
   });
 
-  it('はやうちピストル: 3秒以内なら2ヒット', () => {
+  it('はやうちピストル: 2秒以内なら2ヒット', () => {
     const fast = computeAttack(attackCtx({ equipment: ['r-pistol'], answerSec: 2 }));
     expect(fast.hits).toEqual([10, 10]);
+    const borderline = computeAttack(attackCtx({ equipment: ['r-pistol'], answerSec: 3 }));
+    expect(borderline.hits).toEqual([10]); // 3秒はもう対象外(旧しきい値からの変更点)
     const slow = computeAttack(attackCtx({ equipment: ['r-pistol'], answerSec: 4 }));
     expect(slow.hits).toEqual([10]);
   });
 
-  it('かいりきオウムガイ: 10コンボ以上で100倍', () => {
-    // 10 × 1.9(combo10) × 100 = 1900
-    expect(computeAttack(attackCtx({ combo: 10, equipment: ['s-nautilus'] })).total).toBe(1900);
+  it('かいりきオウムガイ: 10コンボ以上で20倍', () => {
+    // 10 × 1.9(combo10) × 20 = 380
+    expect(computeAttack(attackCtx({ combo: 10, equipment: ['s-nautilus'] })).total).toBe(380);
     expect(computeAttack(attackCtx({ combo: 9, equipment: ['s-nautilus'] })).total).toBe(18);
   });
 
@@ -225,9 +234,9 @@ describe('computeIncoming', () => {
     expect(second.damage).toBe(10);
   });
 
-  it('ノーミスの水: 未ミス中のカウント被弾は1、ミスで消滅', () => {
+  it('ノーミスの水: 未ミス中のカウント被弾は基礎ATK分(10)、ミスで消滅', () => {
     const count = computeIncoming(defenseCtx({ equipment: ['l-water'], noMissSoFar: true }));
-    expect(count.damage).toBe(1);
+    expect(count.damage).toBe(10);
     expect(count.waterLost).toBe(false);
     const miss = computeIncoming(
       defenseCtx({ cause: 'miss', equipment: ['l-water'], noMissSoFar: true }),
@@ -259,13 +268,21 @@ describe('leftoverHeal / jubutsuBackfire / newRun', () => {
     expect(jubutsuBackfire([], () => 0.1)).toBe(false);
   });
 
-  it('newRun: 仕様どおり HP10 / ATK1 / 0G から開始', () => {
+  it('newRun: 仕様どおり HP150 / ATK10 / 0G から開始', () => {
     const run = newRun();
-    expect(run.hp).toBe(10);
-    expect(run.maxHp).toBe(10);
-    expect(run.atk).toBe(1);
+    expect(run.hp).toBe(150);
+    expect(run.maxHp).toBe(150);
+    expect(run.atk).toBe(10);
     expect(run.gold).toBe(0);
     expect(run.floor).toBe(1);
     expect(run.equipment).toEqual([]);
+  });
+});
+
+describe('applyComboGoldBonus', () => {
+  it('10コンボ以上到達でゴールド報酬が3倍になる', () => {
+    expect(applyComboGoldBonus(10, 9)).toBe(10); // 未到達
+    expect(applyComboGoldBonus(10, 10)).toBe(30); // ちょうど到達
+    expect(applyComboGoldBonus(10, 15)).toBe(30); // 超過でも同じ倍率
   });
 });
