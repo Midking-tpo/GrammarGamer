@@ -1,4 +1,4 @@
-import type { GameMode, Stage, Unit } from '../types';
+import type { GameMode, Grade, Stage, Unit } from '../types';
 
 export const UNITS: Unit[] = [
   // 中1ワールド
@@ -62,4 +62,34 @@ export function stageById(stageId: string): Stage {
 
 export function unitsOfGrade(grade: 1 | 2 | 3): Unit[] {
   return UNITS.filter((u) => u.grade === grade);
+}
+
+// ===== ワールドまとめステージ（混合ボス戦） =====
+
+export interface SummaryStage {
+  id: string; // `summary-g${grade}`
+  grade: Grade;
+  title: string;
+  boss: string; // ボスの絵文字
+  questionCount: number;
+  bossHp: number;
+  playerHp: number;
+  winBonusXp: number;
+}
+
+export const SUMMARY_STAGES: SummaryStage[] = ([1, 2, 3] as Grade[]).map((grade) => ({
+  id: `summary-g${grade}`,
+  grade,
+  title: `中${grade}まとめ`,
+  boss: ['🐲', '👿', '💀'][grade - 1],
+  questionCount: 15,
+  bossHp: 12,
+  playerHp: 4,
+  winBonusXp: 50,
+}));
+
+export function summaryStageOf(grade: Grade): SummaryStage {
+  const stage = SUMMARY_STAGES.find((s) => s.grade === grade);
+  if (!stage) throw new Error(`unknown summary grade: ${grade}`);
+  return stage;
 }

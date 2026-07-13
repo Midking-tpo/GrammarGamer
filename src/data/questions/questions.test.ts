@@ -1,7 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { MODES, STAGES, UNITS } from '../curriculum';
+import { MODES, STAGES, SUMMARY_STAGES, UNITS, unitsOfGrade } from '../curriculum';
 import { QUESTIONS_PER_STAGE } from '../../game/engine';
-import { ALL_QUESTIONS, questionsForStage } from './index';
+import {
+  ALL_QUESTIONS,
+  dungeonQuestionPool,
+  questionsForStage,
+  questionsForSummary,
+} from './index';
+import type { Grade } from '../../types';
 
 describe('問題データの整合性', () => {
   it('idが重複していない', () => {
@@ -60,5 +66,25 @@ describe('問題データの整合性', () => {
     expect(UNITS).toHaveLength(24);
     expect(MODES).toHaveLength(3);
     expect(STAGES).toHaveLength(72);
+  });
+
+  it('まとめステージは学年の全単元・全タイプを含む', () => {
+    expect(SUMMARY_STAGES).toHaveLength(3);
+    for (const grade of [1, 2, 3] as Grade[]) {
+      const pool = questionsForSummary(grade);
+      const units = unitsOfGrade(grade);
+      expect(pool).toHaveLength(units.length * 30); // 8単元×30問
+      const unitIds = new Set(pool.map((q) => q.unitId));
+      expect(unitIds.size).toBe(units.length);
+      const types = new Set(pool.map((q) => q.type));
+      expect(types).toEqual(new Set(['choice', 'order', 'fill']));
+    }
+  });
+
+  it('ダンジョンの出題プールは全単元の4択問題', () => {
+    const pool = dungeonQuestionPool();
+    expect(pool).toHaveLength(UNITS.length * 10); // 24単元×10問
+    expect(pool.every((q) => q.type === 'choice')).toBe(true);
+    expect(new Set(pool.map((q) => q.unitId)).size).toBe(UNITS.length);
   });
 });

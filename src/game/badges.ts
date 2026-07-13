@@ -110,6 +110,64 @@ export const BADGES: BadgeDef[] = [
     icon: '💪',
     check: (_, r) => r !== null && r.mode === 'review' && r.total > 0 && r.correct === r.total,
   },
+  // ===== まとめステージ =====
+  {
+    id: 'summary-g1',
+    title: '中1マスター',
+    description: '中1まとめのワールドボスを倒した',
+    icon: '🎓',
+    check: (p) => (p.stages['summary-g1']?.stars ?? 0) >= 1,
+  },
+  {
+    id: 'summary-g2',
+    title: '中2マスター',
+    description: '中2まとめのワールドボスを倒した',
+    icon: '🎓',
+    check: (p) => (p.stages['summary-g2']?.stars ?? 0) >= 1,
+  },
+  {
+    id: 'summary-g3',
+    title: '中3マスター',
+    description: '中3まとめのワールドボスを倒した',
+    icon: '🏆',
+    check: (p) => (p.stages['summary-g3']?.stars ?? 0) >= 1,
+  },
+  // ===== ダンジョン =====
+  {
+    id: 'dungeon-first',
+    title: 'ダンジョン初挑戦',
+    description: 'ダンジョンに挑戦した',
+    icon: '🗝️',
+    check: (p) => p.dungeon.totalRuns >= 1,
+  },
+  {
+    id: 'dungeon-f10',
+    title: '地下10階',
+    description: 'ダンジョンで10階に到達した',
+    icon: '🕳️',
+    check: (p) => p.dungeon.bestFloor >= 10,
+  },
+  {
+    id: 'dungeon-f20',
+    title: '地下20階',
+    description: 'ダンジョンで20階に到達した',
+    icon: '🌋',
+    check: (p) => p.dungeon.bestFloor >= 20,
+  },
+  {
+    id: 'legend-item',
+    title: 'レジェンド入手',
+    description: 'レジェンドのそうびを手に入れた',
+    icon: '🌈',
+    check: (p) => p.dungeon.legendObtained,
+  },
+  {
+    id: 'no-miss-win',
+    title: '無傷討伐',
+    description: 'ダンジョンでノーミスの戦闘勝利をした',
+    icon: '🛡️',
+    check: (p) => p.dungeon.noMissWin,
+  },
 ];
 
 export function badgeById(id: string): Badge | undefined {

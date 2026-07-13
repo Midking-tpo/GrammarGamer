@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { applySession, INITIAL_PROGRESS } from './progressStore';
+import {
+  applyDungeonEnd,
+  applySession,
+  dungeonXp,
+  INITIAL_PROGRESS,
+  migrate,
+} from './progressStore';
 import type { SessionResult } from '../types';
 
 function makeResult(overrides: Partial<SessionResult> = {}): SessionResult {
@@ -76,5 +82,79 @@ describe('applySession', () => {
       wrongIds: [],
     });
     expect(next.badges).toContain('perfect');
+  });
+
+  it('まとめステージのクリアでマスターバッジを獲得する', () => {
+    const next = applySession(INITIAL_PROGRESS, {
+      result: makeResult({ stageId: 'summary-g1', mode: 'summary', stars: 2 }),
+      correctIds: [],
+      wrongIds: [],
+    });
+    expect(next.badges).toContain('summary-g1');
+    expect(next.stages['summary-g1'].stars).toBe(2);
+  });
+});
+
+describe('migrate (v1 → v2)', () => {
+  it('v1データのXP・☆・バッジを温存して dungeon を補完する', () => {
+    const v1 = {
+      version: 1,
+      xp: 500,
+      stages: { 'g1-be-battle': { stars: 3, bestScore: 7 } },
+      badges: ['first-clear'],
+      wrongQuestionIds: ['g1-be-c1'],
+      totalCorrect: 50,
+      bestCombo: 8,
+    };
+    const migrated = migrate(v1);
+    expect(migrated.version).toBe(2);
+    expect(migrated.xp).toBe(500);
+    expect(migrated.stages['g1-be-battle']).toEqual({ stars: 3, bestScore: 7 });
+    expect(migrated.badges).toEqual(['first-clear']);
+    expect(migrated.dungeon).toEqual({
+      bestFloor: 0,
+      totalRuns: 0,
+      totalGold: 0,
+      legendObtained: false,
+      noMissWin: false,
+    });
+  });
+
+  it('未知バージョン・壊れたデータは初期値に戻す', () => {
+    expect(migrate({ version: 99 })).toEqual(INITIAL_PROGRESS);
+    expect(migrate(null)).toEqual(INITIAL_PROGRESS);
+    expect(migrate('junk')).toEqual(INITIAL_PROGRESS);
+  });
+});
+
+describe('applyDungeonEnd', () => {
+  const payload = {
+    floorReached: 12,
+    goldEarned: 150,
+    correctCount: 60,
+    maxCombo: 12,
+    wrongIds: ['g1-be-c1'],
+    legendObtained: true,
+    noMissWin: true,
+  };
+
+  it('記録・XP・誤答リスト・バッジを更新する', () => {
+    const next = applyDungeonEnd(INITIAL_PROGRESS, payload);
+    expect(next.dungeon.bestFloor).toBe(12);
+    expect(next.dungeon.totalRuns).toBe(1);
+    expect(next.dungeon.totalGold).toBe(150);
+    expect(next.xp).toBe(dungeonXp(12));
+    expect(next.wrongQuestionIds).toContain('g1-be-c1');
+    expect(next.badges).toEqual(
+      expect.arrayContaining(['dungeon-first', 'dungeon-f10', 'legend-item', 'no-miss-win']),
+    );
+    expect(next.badges).not.toContain('dungeon-f20');
+  });
+
+  it('bestFloor は更新されないなら据え置き', () => {
+    const first = applyDungeonEnd(INITIAL_PROGRESS, payload);
+    const second = applyDungeonEnd(first, { ...payload, floorReached: 5 });
+    expect(second.dungeon.bestFloor).toBe(12);
+    expect(second.dungeon.totalRuns).toBe(2);
   });
 });

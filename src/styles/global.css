@@ -723,6 +723,333 @@ button {
   margin: 4px 0 0;
 }
 
+/* ===== ダンジョンモード ===== */
+.dungeon-btn {
+  width: 100%;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #3b2f63, #1f2440);
+  border-color: #574a8c;
+  color: #fff;
+  padding: 12px;
+}
+
+.dungeon-btn-title {
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.dungeon-btn-sub {
+  font-size: 12px;
+  opacity: 0.85;
+  font-weight: 600;
+}
+
+.dungeon-screen {
+  background: transparent;
+}
+
+.dungeon-field {
+  background: linear-gradient(180deg, #2c2a4a 0%, #47456b 100%);
+  border-color: #574a8c;
+}
+
+.dungeon-field .hp-label,
+.dungeon-field .hp-value {
+  color: #e8e6f7;
+}
+
+.dungeon-monster {
+  font-size: 62px;
+}
+
+.gold-badge {
+  font-size: 14px;
+  font-weight: 800;
+  color: #9a6700;
+  background: #fff4d6;
+  border: 1.5px solid var(--accent);
+  border-radius: 999px;
+  padding: 2px 10px;
+  white-space: nowrap;
+}
+
+.player-stats {
+  font-size: 13px;
+  font-weight: 700;
+  color: #e8e6f7;
+}
+
+.count-gauge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.count-label {
+  font-size: 10px;
+  color: #cfc9ee;
+  white-space: nowrap;
+}
+
+.count-pips {
+  display: flex;
+  gap: 3px;
+  flex: 1;
+  flex-wrap: wrap;
+}
+
+.pip {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #55507a;
+}
+
+.pip.on {
+  background: var(--accent);
+  box-shadow: 0 0 4px rgba(255, 176, 32, 0.7);
+}
+
+.count-value {
+  font-size: 13px;
+  font-weight: 800;
+  color: #ffd166;
+  min-width: 18px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.dungeon-statusline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 26px;
+  margin: 6px 0;
+}
+
+.damage-popup {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--red);
+  animation: pop 0.3s ease;
+}
+
+.equipment-mini {
+  font-size: 16px;
+  letter-spacing: 2px;
+}
+
+.event-log {
+  background: var(--card);
+  border: 1.5px dashed var(--border);
+  border-radius: 10px;
+  padding: 6px 12px;
+  margin-bottom: 4px;
+}
+
+.event-log p {
+  margin: 2px 0;
+  font-size: 12.5px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.victory-screen,
+.gameover-screen {
+  text-align: center;
+}
+
+.victory-note {
+  font-weight: 800;
+  color: #e07b00;
+}
+
+.new-record {
+  color: #e07b00;
+}
+
+/* ===== SHOP ===== */
+.shop-status {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  font-weight: 800;
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+
+.shop-heading {
+  font-size: 15px;
+  margin: 14px 0 8px;
+}
+
+.shop-upgrades {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.shop-item {
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  grid-template-areas:
+    'icon name price'
+    'icon desc price';
+  align-items: center;
+  gap: 0 10px;
+  text-align: left;
+  padding: 10px 12px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+
+.shop-item:disabled {
+  opacity: 0.5;
+}
+
+.shop-item-icon {
+  grid-area: icon;
+  font-size: 24px;
+}
+
+.shop-item-name {
+  grid-area: name;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.shop-item-desc {
+  grid-area: desc;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.shop-item-price {
+  grid-area: price;
+  font-weight: 800;
+  color: #9a6700;
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.owned-equipment,
+.shop-stock {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.equipment-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+
+.equipment-icon {
+  font-size: 26px;
+}
+
+.equipment-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.equipment-body strong {
+  display: block;
+  font-size: 14px;
+}
+
+.equipment-body p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.rarity-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 800;
+  border-radius: 999px;
+  padding: 1px 8px;
+  margin-bottom: 2px;
+}
+
+.rarity-tag.rarity-normal {
+  background: #eef1f7;
+  color: #5a657d;
+}
+
+.rarity-tag.rarity-rare {
+  background: #e1ecff;
+  color: #2b5fd9;
+}
+
+.rarity-tag.rarity-super {
+  background: #f3e5ff;
+  color: #8b2fd6;
+}
+
+.rarity-tag.rarity-legend {
+  background: linear-gradient(90deg, #fff3c4, #ffd9e8);
+  color: #b3541e;
+}
+
+.equipment-card.rarity-rare {
+  border-color: #86adf5;
+}
+
+.equipment-card.rarity-super {
+  border-color: #c78bef;
+}
+
+.equipment-card.rarity-legend {
+  border-color: var(--accent);
+  background: #fffdf4;
+}
+
+.equipment-card.owned {
+  background: #f4f7ff;
+}
+
+.shop-note,
+.shop-soldout {
+  font-size: 12.5px;
+  color: var(--muted);
+  text-align: center;
+  margin: 4px 0;
+}
+
+.depart-btn {
+  width: 100%;
+  margin-top: 14px;
+  padding: 14px;
+  font-size: 16px;
+}
+
+/* ===== まとめステージ ===== */
+.summary-card {
+  border-color: var(--accent);
+  background: #fffaf0;
+}
+
+.stage-btn.boss {
+  background: #fff3d9;
+  border-color: var(--accent);
+}
+
 /* ===== 小さめのスマホ（〜360px, iPhone SE など）向け微調整 ===== */
 @media (max-width: 360px) {
   .screen {

@@ -1,5 +1,5 @@
 import { MODES, unitsOfGrade } from '../data/curriculum';
-import type { Progress, Unit } from '../types';
+import type { Grade, Progress, Unit } from '../types';
 
 /** 単元クリア = その単元のいずれかのステージを☆1以上でクリア */
 export function unitCleared(progress: Progress, unitId: string): boolean {
@@ -12,4 +12,9 @@ export function isUnitUnlocked(progress: Progress, unit: Unit): boolean {
   const index = units.findIndex((u) => u.id === unit.id);
   if (index <= 0) return true;
   return unitCleared(progress, units[index - 1].id);
+}
+
+/** まとめステージ: その学年の全単元をいずれか1モードで☆1以上クリアで解放 */
+export function isSummaryUnlocked(progress: Progress, grade: Grade): boolean {
+  return unitsOfGrade(grade).every((u) => unitCleared(progress, u.id));
 }

@@ -54,20 +54,30 @@ export interface StageRecord {
   bestScore: number;
 }
 
+/** ダンジョンモードの通算記録（Progress に永続化） */
+export interface DungeonRecord {
+  bestFloor: number;
+  totalRuns: number;
+  totalGold: number;
+  legendObtained: boolean;
+  noMissWin: boolean;
+}
+
 export interface Progress {
-  version: 1;
+  version: 2;
   xp: number;
   stages: Record<string, StageRecord>;
   badges: string[];
   wrongQuestionIds: string[];
   totalCorrect: number;
   bestCombo: number;
+  dungeon: DungeonRecord;
 }
 
 /** 1プレイの結果（リザルト画面・バッジ判定に渡す） */
 export interface SessionResult {
   stageId: string | null; // null = にがて復習
-  mode: GameMode | 'review';
+  mode: GameMode | 'review' | 'summary';
   unitTitle: string;
   total: number;
   correct: number;
@@ -77,6 +87,43 @@ export interface SessionResult {
   defeated: boolean; // バトルでHPが尽きた
   timeLeft: number; // タイムアタックの残り秒
   wrongQuestions: Question[];
+}
+
+// ===== ダンジョンモード =====
+
+export type Rarity = 'normal' | 'rare' | 'super' | 'legend';
+
+export interface EquipmentDef {
+  id: string;
+  name: string;
+  rarity: Rarity;
+  price: number;
+  icon: string;
+  description: string;
+}
+
+/** 進行中のラン（別キーで localStorage に保存、敗北でクリア） */
+export interface DungeonRun {
+  floor: number; // 現在の階（1開始）
+  battlesCleared: number; // 勝利数（SHOP判定 = %3）
+  hp: number;
+  maxHp: number;
+  atk: number;
+  gold: number;
+  goldEarned: number; // ラン通算獲得G（統計用）
+  combo: number; // ラン内で継続するコンボ（ミスで0）
+  equipment: string[]; // EquipmentDef.id（最大3）
+  atkBought: number;
+  defBought: number;
+  healBought: number;
+  nextBattleDoubleDamage: boolean; // いぶりがっこの持ち越し
+  phase: 'battle' | 'shop';
+  shopStock: string[] | null; // SHOP表示中の抽選そうび
+  wrongQuestionIds: string[]; // ラン内の誤答（敗北時ににがて復習へ）
+  totalCorrect: number;
+  maxCombo: number; // ラン内の最大コンボ
+  usedLegend: boolean; // レジェンド入手済み（バッジ用）
+  hadNoMissWin: boolean; // ノーミス勝利あり（バッジ用）
 }
 
 export interface Badge {
