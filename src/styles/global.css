@@ -316,6 +316,11 @@ button {
   margin-bottom: 12px;
 }
 
+.header-quit-group {
+  display: flex;
+  gap: 4px;
+}
+
 .game-title {
   font-weight: 800;
   font-size: 16px;
@@ -1072,6 +1077,11 @@ button {
   margin-top: 14px;
   padding: 14px;
   font-size: 16px;
+}
+
+.reroll-btn {
+  display: block;
+  margin: 4px auto 8px;
 }
 
 /* ===== まとめステージ ===== */

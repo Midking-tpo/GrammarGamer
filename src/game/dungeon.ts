@@ -35,6 +35,8 @@ export const EASY_MODE_STARTING_GOLD = 30;
 export const SHOP_INTERVAL = 2;
 /** そうびの保有上限 */
 export const EQUIPMENT_LIMIT = 3;
+/** SHOPのそうびラインナップを引き直す価格（固定） */
+export const SHOP_REROLL_PRICE = 20;
 
 export function newRun(mode: DungeonMode): DungeonRun {
   const isEasy = mode === 'easy';
@@ -70,14 +72,26 @@ export const ENEMY_HP_ACCEL = 0.08;
 /** 敵ATKの基準値・上昇率(緩やかな線形。コンボが戦闘毎リセットになったため急激な上昇は不要)。 */
 export const ENEMY_ATK_BASE = 10;
 export const ENEMY_ATK_SLOPE = 0.2;
+/**
+ * 装備やアップグレードが揃う階層(30階超)からは、それまでの上昇に上乗せしてさらに加速させる。
+ * floor<=POST_ACCEL_FLOORまではこれまでどおりの数値のまま変化しない。
+ */
+export const POST_ACCEL_FLOOR = 30;
+export const POST_ACCEL_HP = 2;
+export const POST_ACCEL_ATK_SLOPE = 0.5;
 
 export function enemyStats(
   floor: number,
   mode: DungeonMode,
 ): { hp: number; atk: number; countMax: number } {
+  const over = Math.max(0, floor - POST_ACCEL_FLOOR);
   return {
-    hp: Math.round(10 * (2 * floor + 2) + ENEMY_HP_ACCEL * (floor - 1) ** 2),
-    atk: Math.round(ENEMY_ATK_BASE + ENEMY_ATK_SLOPE * (floor - 1)),
+    hp: Math.round(
+      10 * (2 * floor + 2) + ENEMY_HP_ACCEL * (floor - 1) ** 2 + POST_ACCEL_HP * over ** 2,
+    ),
+    atk: Math.round(
+      ENEMY_ATK_BASE + ENEMY_ATK_SLOPE * (floor - 1) + POST_ACCEL_ATK_SLOPE * over,
+    ),
     countMax: MODE_COUNT_MAX[mode],
   };
 }

@@ -1,4 +1,10 @@
-import { EQUIPMENT_LIMIT, attackPrice, defensePrice, healPrice } from '../../game/dungeon';
+import {
+  EQUIPMENT_LIMIT,
+  SHOP_REROLL_PRICE,
+  attackPrice,
+  defensePrice,
+  healPrice,
+} from '../../game/dungeon';
 import { RARITY_LABELS, equipmentById } from '../../data/equipment';
 import type { DungeonRun } from '../../types';
 
@@ -9,8 +15,10 @@ interface Props {
   onBuyHeal: () => void;
   onBuyEquipment: (id: string) => void;
   onDiscardEquipment: (id: string) => void;
+  onRerollStock: () => void;
   onLeave: () => void;
   onQuit: () => void;
+  onExit: () => void;
 }
 
 export function DungeonShopView({
@@ -20,8 +28,10 @@ export function DungeonShopView({
   onBuyHeal,
   onBuyEquipment,
   onDiscardEquipment,
+  onRerollStock,
   onLeave,
   onQuit,
+  onExit,
 }: Props) {
   const atkCost = attackPrice(run.atkBought);
   const defCost = defensePrice(run.defBought);
@@ -31,9 +41,14 @@ export function DungeonShopView({
   return (
     <div className="screen dungeon-screen shop-screen">
       <header className="game-header">
-        <button className="btn ghost small" onClick={onQuit}>
-          ✕ ちゅうだん
-        </button>
+        <div className="header-quit-group">
+          <button className="btn ghost small" onClick={onQuit}>
+            ✕ ちゅうだん
+          </button>
+          <button className="btn ghost small" onClick={onExit}>
+            🚪 やめる
+          </button>
+        </div>
         <span className="game-title">🛒 SHOP（地下{run.floor}階）</span>
         <span className="gold-badge">💰 {run.gold}G</span>
       </header>
@@ -90,6 +105,14 @@ export function DungeonShopView({
           })}
         </div>
       )}
+
+      <button
+        className="btn ghost small reroll-btn"
+        onClick={onRerollStock}
+        disabled={run.gold < SHOP_REROLL_PRICE}
+      >
+        🔄 そうびを引き直す（{SHOP_REROLL_PRICE}G）
+      </button>
 
       <div className="shop-stock">
         {(run.shopStock ?? []).length === 0 && (

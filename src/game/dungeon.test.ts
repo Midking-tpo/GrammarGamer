@@ -73,6 +73,16 @@ describe('enemyStats', () => {
     const diffLate = enemyStats(30, 'hard').hp - enemyStats(29, 'hard').hp;
     expect(diffLate).toBeGreaterThan(diffEarly);
   });
+
+  it('30階まではPOST_ACCEL適用前と数値が変わらず、31階以降はさらに加速する', () => {
+    expect(enemyStats(30, 'hard')).toEqual({ hp: 687, atk: 16, countMax: 13 });
+    expect(enemyStats(31, 'hard')).toEqual({ hp: 714, atk: 17, countMax: 13 });
+    expect(enemyStats(50, 'hard')).toEqual({ hp: 2012, atk: 30, countMax: 13 });
+    // 31階以降の1階あたりの伸び幅は、30階以前より明らかに大きい
+    const preAccelStep = enemyStats(30, 'hard').hp - enemyStats(29, 'hard').hp;
+    const postAccelStep = enemyStats(50, 'hard').hp - enemyStats(49, 'hard').hp;
+    expect(postAccelStep).toBeGreaterThan(preAccelStep);
+  });
 });
 
 describe('comboMultiplier', () => {

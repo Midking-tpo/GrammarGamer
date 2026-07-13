@@ -6,6 +6,7 @@ import {
   EASY_MODE_STARTING_GOLD,
   MODE_ASSUMED_ANSWER_SEC,
   SHOP_INTERVAL,
+  SHOP_REROLL_PRICE,
   attackPrice,
   defensePrice,
   drawShopEquipment,
@@ -44,6 +45,8 @@ interface VictoryInfo {
   shopNext: boolean;
 }
 
+type EndReason = 'defeat' | 'jubutsu' | 'quit';
+
 interface GameOverInfo {
   floorReached: number;
   goldEarned: number;
@@ -51,7 +54,7 @@ interface GameOverInfo {
   newBadgeIds: string[];
   isNewRecord: boolean;
   earnedXp: number;
-  byJubutsu: boolean;
+  reason: EndReason;
 }
 
 type View =
@@ -117,7 +120,7 @@ export function DungeonScreen({ onHome }: Props) {
   // ここから先は run が確定して存在する（null になり得ない）ことを示す別名
   const activeRun = run;
 
-  function endRun(finalRun: DungeonRun, floorReached: number, byJubutsu: boolean) {
+  function endRun(finalRun: DungeonRun, floorReached: number, reason: EndReason) {
     const payload: CompleteDungeonPayload = {
       floorReached,
       goldEarned: finalRun.goldEarned,
@@ -140,9 +143,17 @@ export function DungeonScreen({ onHome }: Props) {
         newBadgeIds,
         isNewRecord: floorReached > progress.dungeon.bestFloor,
         earnedXp: dungeonXp(floorReached),
-        byJubutsu,
+        reason,
       },
     });
+  }
+
+  // 中断（続きから再開できる）ではなく、ランを完全に終了する
+  function handleExit(floorReached: number) {
+    if (!window.confirm('ダンジョンから出ますか？ 今のランはここで終了し、記録が保存されます。')) {
+      return;
+    }
+    endRun(activeRun, floorReached, 'quit');
   }
 
   function handleOutcome(o: BattleOutcome) {
@@ -156,7 +167,7 @@ export function DungeonScreen({ onHome }: Props) {
     };
 
     if (!o.won) {
-      return endRun(merged, activeRun.floor, false);
+      return endRun(merged, activeRun.floor, 'defeat');
     }
 
     const battlesCleared = activeRun.battlesCleared + 1;
@@ -178,7 +189,7 @@ export function DungeonScreen({ onHome }: Props) {
     setRun(next);
 
     if (o.jubutsuDeath) {
-      return endRun(next, activeRun.floor, true);
+      return endRun(next, activeRun.floor, 'jubutsu');
     }
 
     setView({
@@ -229,6 +240,10 @@ export function DungeonScreen({ onHome }: Props) {
     },
     onDiscardEquipment: (id: string) =>
       setRun({ ...activeRun, equipment: activeRun.equipment.filter((e) => e !== id) }),
+    onRerollStock: () =>
+      buy(SHOP_REROLL_PRICE, (r) => ({
+        shopStock: drawShopEquipment(r.equipment).map((e) => e.id),
+      })),
     onLeave: () => {
       setRun({ ...activeRun, phase: 'battle', shopStock: null });
       setView({ name: 'battle' });
@@ -243,6 +258,7 @@ export function DungeonScreen({ onHome }: Props) {
           run={activeRun}
           onOutcome={handleOutcome}
           onQuit={onHome}
+          onExit={() => handleExit(activeRun.floor)}
         />
       );
     case 'victory':
@@ -273,16 +289,35 @@ export function DungeonScreen({ onHome }: Props) {
             <button className="btn" onClick={onHome}>
               🏠 ちゅうだん（続きから再開できる）
             </button>
+            <button
+              className="btn ghost small"
+              onClick={() => handleExit(view.info.floorCleared)}
+            >
+              🚪 ダンジョンから出る
+            </button>
           </div>
         </div>
       );
     case 'shop':
-      return <DungeonShopView run={activeRun} onQuit={onHome} {...shopHandlers} />;
+      return (
+        <DungeonShopView
+          run={activeRun}
+          onQuit={onHome}
+          onExit={() => handleExit(activeRun.floor - 1)}
+          {...shopHandlers}
+        />
+      );
     case 'gameover': {
       const info = view.info;
       return (
         <div className="screen dungeon-screen gameover-screen">
-          <h1 className="result-title">{info.byJubutsu ? '🧿 じゅぶつの代償…' : '💀 ちから尽きた…'}</h1>
+          <h1 className="result-title">
+            {info.reason === 'jubutsu'
+              ? '🧿 じゅぶつの代償…'
+              : info.reason === 'quit'
+                ? '🚪 ダンジョンから出た'
+                : '💀 ちから尽きた…'}
+          </h1>
           <p className="result-unit">
             地下{info.floorReached}階まで到達
             {info.isNewRecord && <strong className="new-record"> 🎊 新記録！</strong>}

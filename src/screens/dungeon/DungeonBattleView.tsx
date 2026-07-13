@@ -39,6 +39,7 @@ interface Props {
   run: DungeonRun;
   onOutcome: (outcome: BattleOutcome) => void;
   onQuit: () => void;
+  onExit: () => void;
 }
 
 interface EventLine {
@@ -46,7 +47,7 @@ interface EventLine {
   text: string;
 }
 
-export function DungeonBattleView({ run, onOutcome, onQuit }: Props) {
+export function DungeonBattleView({ run, onOutcome, onQuit, onExit }: Props) {
   const enemy = useMemo(() => enemyStats(run.floor, run.mode), [run.floor, run.mode]);
   const monster = DUNGEON_MONSTERS[(run.floor - 1) % DUNGEON_MONSTERS.length];
 
@@ -265,9 +266,14 @@ export function DungeonBattleView({ run, onOutcome, onQuit }: Props) {
   return (
     <div className="screen game-screen dungeon-screen">
       <header className="game-header">
-        <button className="btn ghost small" onClick={onQuit}>
-          ✕ ちゅうだん
-        </button>
+        <div className="header-quit-group">
+          <button className="btn ghost small" onClick={onQuit}>
+            ✕ ちゅうだん
+          </button>
+          <button className="btn ghost small" onClick={onExit}>
+            🚪 やめる
+          </button>
+        </div>
         <span className="game-title">🏰 地下{run.floor}階</span>
         <span className="gold-badge">💰 {run.gold}G</span>
       </header>
