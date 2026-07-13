@@ -47,7 +47,7 @@ interface EventLine {
 }
 
 export function DungeonBattleView({ run, onOutcome, onQuit }: Props) {
-  const enemy = useMemo(() => enemyStats(run.floor), [run.floor]);
+  const enemy = useMemo(() => enemyStats(run.floor, run.mode), [run.floor, run.mode]);
   const monster = DUNGEON_MONSTERS[(run.floor - 1) % DUNGEON_MONSTERS.length];
 
   const [queue, setQueue] = useState<Question[]>(() => shuffle(dungeonQuestionPool()));
@@ -57,7 +57,7 @@ export function DungeonBattleView({ run, onOutcome, onQuit }: Props) {
   const [playerHp, setPlayerHp] = useState(run.hp);
   const [combo, setCombo] = useState(run.combo);
   const [maxCombo, setMaxCombo] = useState(0);
-  const [count, setCount] = useState(() => initialCount(run.equipment, true));
+  const [count, setCount] = useState(() => initialCount(run.equipment, true, run.mode));
   const [feedback, setFeedback] = useState<boolean | null>(null);
   const [shake, setShake] = useState<'enemy' | 'player' | null>(null);
   const [events, setEvents] = useState<EventLine[]>([]);
@@ -116,7 +116,7 @@ export function DungeonBattleView({ run, onOutcome, onQuit }: Props) {
       if (nextEnemy <= 0 && nextHp > 0) return finishWin();
     }
     if (nextHp <= 0) return finishLose();
-    setCount(initialCount(equipment, false));
+    setCount(initialCount(equipment, false, run.mode));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [count, running]);
 
@@ -199,6 +199,13 @@ export function DungeonBattleView({ run, onOutcome, onQuit }: Props) {
       stats.current.correctCount += 1;
       setShake('enemy');
       playCorrect();
+
+      // たべのこし: 正解するたびに回復
+      const heal = leftoverHeal(equipment, run.maxHp);
+      if (heal > 0) {
+        hp = Math.min(run.maxHp, hp + heal);
+        setPlayerHp(hp);
+      }
     } else {
       const incoming = computeIncoming({
         enemyAtk: enemy.atk,
@@ -221,7 +228,7 @@ export function DungeonBattleView({ run, onOutcome, onQuit }: Props) {
         pushEvent(`💥 ミス！ ${incoming.damage} ダメージ`);
         if (incoming.waterLost) {
           setEquipment((eq) => eq.filter((id) => id !== 'l-water'));
-          pushEvent('💧 ノーミスの水がくだけちった…');
+          pushEvent('💧 ノーミスの水がすてられてしまった…');
         }
         if (incoming.reflect > 0) {
           eHp -= incoming.reflect;
@@ -231,13 +238,6 @@ export function DungeonBattleView({ run, onOutcome, onQuit }: Props) {
       }
       setShake('player');
       playWrong();
-    }
-
-    // たべのこし: 回答するたびに回復
-    const heal = leftoverHeal(equipment, run.maxHp);
-    if (heal > 0 && hp > 0) {
-      hp = Math.min(run.maxHp, hp + heal);
-      setPlayerHp(hp);
     }
 
     setFeedback(isCorrect);
@@ -260,7 +260,7 @@ export function DungeonBattleView({ run, onOutcome, onQuit }: Props) {
 
   if (!current) return null;
 
-  const countMax = initialCount(equipment, !flags.current.firstCountDone);
+  const countMax = initialCount(equipment, !flags.current.firstCountDone, run.mode);
 
   return (
     <div className="screen game-screen dungeon-screen">
@@ -309,13 +309,11 @@ export function DungeonBattleView({ run, onOutcome, onQuit }: Props) {
         )}
       </div>
 
-      {events.length > 0 && (
-        <div className="event-log">
-          {events.map((e) => (
-            <p key={e.id}>{e.text}</p>
-          ))}
-        </div>
-      )}
+      <div className="event-log">
+        {events.map((e) => (
+          <p key={e.id}>{e.text}</p>
+        ))}
+      </div>
 
       <QuestionPanel
         key={current.id}

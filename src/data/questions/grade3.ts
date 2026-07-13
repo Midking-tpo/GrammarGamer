@@ -14,6 +14,9 @@ const perfect = defineUnit('g3-perfect', {
     ['現在完了と過去形の違いは？', ['現在完了は今とのつながりを表す', '現在完了は過去の一点だけを表す', '同じ意味', '現在完了は未来を表す'], 0, '過去形は過去の事実だけ、現在完了は「今も続く・今に影響する」ことを表すよ。'],
     ['現在完了で使えない語は？', ['yesterday', 'just', 'already', 'never'], 0, 'yesterday や ~ago など過去の一点を表す語は現在完了と一緒に使えないよ。'],
     ['「あなたは今までに沖縄へ行ったことがありますか」 Have you (　) been to Okinawa?', ['ever', 'never', 'yet', 'since'], 0, '疑問文の「今までに」は ever を過去分詞の前に置くよ。'],
+    ['「私たちは3回、その映画を見たことがあります」 We have (　) that movie three times.', ['seen', 'saw', 'see', 'seeing'], 0, '経験を表す現在完了。see の過去分詞は seen。'],
+    ['「あなたはどのくらいの間、ここで働いていますか」 (　) long have you worked here?', ['How', 'What', 'When', 'Which'], 0, '期間をたずねるのは How long + 現在完了。'],
+    ['「彼女はまだ到着していません」 She has not (　) yet.', ['arrive', 'arrived', 'arriving', 'arrives'], 1, '現在完了の否定文も has/have + 過去分詞のままだよ。'],
   ],
   order: [
     ['私はちょうど駅に着いたところです。', ['I', 'have', 'just', 'arrived', 'at', 'the', 'station.'], 'have + just + 過去分詞 の語順。'],
@@ -54,6 +57,9 @@ const perfprog = defineUnit('g3-perfprog', {
     ['「彼女は朝からずっとピアノを練習し続けています」', ['She has been practicing the piano since morning.', 'She has practicing the piano since morning.', 'She is been practicing the piano since morning.', 'She has been practice the piano since morning.'], 0, 'has been + practicing（ing形）が正しい形。'],
     ['「私は昨夜からずっと具合が悪い→状態動詞の場合は？」 I (　) sick since last night.', ['have been', 'have been being', 'am being', 'was'], 0, 'be動詞や know など状態を表す動詞は、現在完了形（have been）で継続を表すよ。'],
     ['「弟は2時間ゲームをし続けています」 My brother (　) video games for two hours.', ['has been playing', 'have been playing', 'is played', 'has playing'], 0, 'My brother は三人称単数。has been playing。'],
+    ['「私たちは30分間ずっと話し続けています」 We (　) talking for thirty minutes.', ['have been', 'has been', 'are', 'were'], 0, '主語 We なので have been talking。'],
+    ['「あなたはどのくらいテレビゲームをし続けていますか」 How long have you (　) playing video games?', ['been', 'be', 'being', 'was'], 0, 'have been ~ing の been が抜けやすいので注意しよう。'],
+    ['「彼女は今朝からずっと泣き続けています」 She has been (　) since this morning.', ['crying', 'cried', 'cry', 'cries'], 0, 'has been + ing形 crying。'],
   ],
   order: [
     ['私は今朝からずっと英語を勉強し続けています。', ['I', 'have', 'been', 'studying', 'English', 'since', 'this', 'morning.'], 'have been + ing形 + since + 起点。'],
@@ -94,6 +100,9 @@ const infadv = defineUnit('g3-infadv', {
     ['「私は切符の買い方を知りません」 I don\'t know (　) to buy a ticket.', ['how', 'what', 'when', 'who'], 0, 'how to 〜 で「〜のしかた」。'],
     ['「あなたにとって早起きは簡単ですか」 Is it easy (　) you to get up early?', ['for', 'to', 'of', 'at'], 0, 'It is ~ for 人 to ... で「人にとって…することは〜だ」。'],
     ['「母は私に部屋を掃除するように言いました」 My mother told me (　) my room.', ['to clean', 'clean', 'cleaning', 'cleaned'], 0, 'tell + 人 + to + 動詞の原形。'],
+    ['「この川で泳ぐことは危険です」 (　) is dangerous to swim in this river.', ['It', 'This', 'That', 'There'], 0, '形式主語 It が to 以下の内容を指すよ。'],
+    ['「私は彼女にピアノの弾き方を教えました」 I taught her (　) to play the piano.', ['how', 'what', 'when', 'why'], 0, 'how to 〜 で「〜のしかた」を表すよ。'],
+    ['「この箱は私には重すぎて運べません」 This box is too heavy (　) me to carry.', ['for', 'to', 'of', 'at'], 0, '「人にとって」は for 人 を to の前に置くよ。'],
   ],
   order: [
     ['英語を話すことは私には簡単ではありません。', ['It', 'is', 'not', 'easy', 'for', 'me', 'to', 'speak', 'English.'], 'It is ~ for 人 to ... の語順。'],
@@ -134,6 +143,9 @@ const part = defineUnit('g3-part', {
     ['「向こうで泳いでいる男性は私の父です」 The man (　) over there is my father.', ['swimming', 'swum', 'swims', 'swam'], 0, 'swimming over there が後ろから man を修飾するよ。'],
     ['「これは日本製の（日本で作られた）車です」 This is a car (　) in Japan.', ['made', 'making', 'makes', 'make'], 0, '「作られた」は過去分詞 made。made in Japan で「日本製」。'],
     ['分詞の位置のルールとして正しいものは？', ['1語なら名詞の前、語句を伴えば後ろ', 'いつも名詞の前', 'いつも名詞の後ろ', '文のいちばん後ろ'], 0, 'a sleeping baby（前）/ a baby sleeping in the bed（後ろ）と使い分けるよ。'],
+    ['「木の下で眠っている犬を見て」 Look at the dog (　) under the tree.', ['sleep', 'sleeping', 'slept', 'sleeps'], 1, '語句を伴う現在分詞 sleeping under the tree が dog を後ろから修飾するよ。'],
+    ['「これは祖父から私に贈られた時計です」 This is a watch (　) to me by my grandfather.', ['give', 'giving', 'given', 'gives'], 2, '「贈られた」は過去分詞 given。give - gave - given。'],
+    ['「割れたコップに気をつけて」 Be careful with the (　) cup.', ['break', 'breaking', 'broken', 'breaks'], 2, '「割れた」は過去分詞 broken。1語なので名詞の前に置くよ。'],
   ],
   order: [
     ['あそこで歌っている少女を知っていますか。', ['Do', 'you', 'know', 'the', 'girl', 'singing', 'over', 'there?'], 'singing over there が girl を後ろから修飾するよ。'],
@@ -174,6 +186,9 @@ const rel = defineUnit('g3-rel', {
     ['「長い髪の少女→長い髪を持っている少女」 the girl (　) has long hair', ['who', 'which', 'whom', 'what'], 0, '先行詞が人で主格なので who を使うよ。'],
     ['「私が好きな教科は英語です」 The subject (　) I like is English.', ['that', 'who', 'whose', 'whom'], 0, '先行詞が物で目的格。that または which、省略もOK。'],
     ['関係代名詞の文の説明で正しいものは？', ['2つの文を1つにまとめる働きがある', '疑問文を作る働きがある', '否定文を作る働きがある', '命令文を作る働きがある'], 0, '関係代名詞は名詞（先行詞）を後ろから説明する文をつなげるよ。'],
+    ['「これは彼が撮った写真です」 This is the picture (　) he took.', ['which', 'who', 'whose', 'whom'], 0, '先行詞が物で目的格。which（that も可）を使うよ。'],
+    ['「私には英語を教えてくれる友達がいます」 I have a friend (　) teaches me English.', ['who', 'which', 'whose', 'whom'], 0, '先行詞が人で主格なので who。'],
+    ['「これは私が今までに読んだ中でいちばんおもしろい本です」 This is the most interesting book (　) I have ever read.', ['that', 'who', 'whose', 'whom'], 0, '先行詞が物で目的格。最上級の後ろは that がよく使われるよ。'],
   ],
   order: [
     ['私には上手に泳げる友達がいます。', ['I', 'have', 'a', 'friend', 'who', 'can', 'swim', 'well.'], '先行詞 a friend の後ろに who + 動詞。'],
@@ -214,6 +229,9 @@ const indq = defineUnit('g3-indq', {
     ['「これが何か教えて」 Tell me what (　).', ['this is', 'is this', 'does this', 'this does'], 0, 'what の後ろは this is の語順になるよ。'],
     ['「彼女がどこにいるか」を間接疑問文で言うと？', ['where she is', 'where is she', 'she where is', 'is she where'], 0, '疑問詞 where + 主語 she + 動詞 is の順。'],
     ['「私は彼が何と言ったか覚えていません」 I don\'t remember what (　).', ['he said', 'did he say', 'he did say', 'said he'], 0, '過去の間接疑問文。what + he said と普通の語順にするよ。'],
+    ['「私は彼女がどこの出身か知りません」 I don\'t know where (　).', ['she is from', 'is she from', 'does she from', 'from she is'], 0, '間接疑問文は疑問詞 + 主語 + 動詞 の語順になるよ。'],
+    ['「これがいくらか教えてください」 Please tell me how much (　).', ['it is', 'is it', 'does it', 'it does'], 0, 'how much + it is の語順になるよ。'],
+    ['「彼らが何人来るのか知っていますか」 Do you know how many people (　)?', ['are coming', 'coming are', 'do come', 'come do'], 0, 'how many people（かたまり）+ are coming の語順。'],
   ],
   order: [
     ['私は彼がどこの出身か知っています。', ['I', 'know', 'where', 'he', 'is', 'from.'], 'where + 主語 + 動詞 の語順。'],
@@ -254,6 +272,9 @@ const subj = defineUnit('g3-subj', {
     ['「もし彼の電話番号を知っていたら、電話できるのに」 If I (　) his number, I could call him.', ['knew', 'know', 'will know', 'known'], 0, '仮定法では動詞も過去形 knew にするよ。'],
     ['「時間があれば、あなたを手伝えるのに」 If I had time, I (　) help you.', ['could', 'can', 'will', 'do'], 0, '結論部分は could/would + 原形。「手伝えるのに」は could help。'],
     ['「宇宙に行けたらいいのに」 I (　) I could go to space.', ['wish', 'hope', 'want', 'think'], 0, '実現が難しい願望は I wish + 仮定法で表すよ。'],
+    ['「もし明日晴れたら、ピクニックに行きます」 If it (　) sunny tomorrow, we will go on a picnic.', ['is', 'were', 'was', 'will be'], 0, 'これは実現しうる現実的な条件文なので、仮定法の were ではなく通常の現在形 is を使うよ。'],
+    ['「もっとお金があったらいいのに」 I wish I (　) more money.', ['had', 'have', 'has', 'will have'], 0, 'I wish の後ろは過去形。have → had にするよ。'],
+    ['「彼が忙しくなければ、パーティーに来られるのに」 If he (　) not busy, he could come to the party.', ['were', 'is', 'was', 'will be'], 0, '仮定法のbe動詞は主語に関わらず were を使うのが基本だよ。'],
   ],
   order: [
     ['もし私が鳥なら、空を飛べるのに。', ['If', 'I', 'were', 'a', 'bird,', 'I', 'could', 'fly', 'in', 'the', 'sky.'], 'If + 主語 + were 〜, 主語 + could + 原形。'],
@@ -294,6 +315,9 @@ const caus = defineUnit('g3-caus', {
     ['「自己紹介させてください」 Let me (　) myself.', ['introduce', 'to introduce', 'introducing', 'introduced'], 0, 'Let me introduce myself. は自己紹介の定番表現。'],
     ['「私は妹が宿題をするのを手伝いました」 I helped my sister (　) her homework.', ['do', 'did', 'doing', 'does'], 0, 'help + 人 + 動詞の原形 do。'],
     ['let の後ろの動詞の形は？', ['原形', 'to + 原形', 'ing形', '過去分詞'], 0, 'let / make / help の後ろの動詞は原形（原形不定詞）を使うよ。'],
+    ['「その音楽は私を眠くさせました」 The music made me (　).', ['sleepy', 'to sleepy', 'sleep', 'slept'], 0, 'make + 人 + 形容詞 sleepy で「〜な状態にさせる」。'],
+    ['「先生は私たちにこの単語を覚えさせました」 Our teacher made us (　) this word.', ['remember', 'to remember', 'remembering', 'remembered'], 0, 'make + 人 + 動詞の原形 remember。'],
+    ['「手伝わせてください」', ['Let me help you with that.', 'Made me help you with that.', 'Help me help you with that.', 'Get me help you with that.'], 0, 'Let me help you with that. で「手伝わせてください」という定番表現だよ。'],
   ],
   order: [
     ['母は私に部屋を掃除させました。', ['My', 'mother', 'made', 'me', 'clean', 'my', 'room.'], 'made + 人 + 動詞の原形 clean。'],

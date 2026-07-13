@@ -1,5 +1,5 @@
 import { EQUIPMENT, RARITY_WEIGHTS } from '../data/equipment';
-import type { DungeonRun, EquipmentDef, Rarity } from '../types';
+import type { DungeonMode, DungeonRun, EquipmentDef, Rarity } from '../types';
 
 /** 乱数生成器（テスト時にシード注入できるよう関数で受け取る） */
 export type Rng = () => number;
@@ -13,21 +13,39 @@ export const DUNGEON_START = {
   gold: 0,
 } as const;
 
-/** 敵カウントの基準値（秒・全階固定） */
-export const COUNT_MAX = 8;
+/**
+ * 敵カウント（秒）はモードごとの想定解答速度に応じてスケールする。
+ * 基準: 1問3秒・countMax8秒でバランス検証済み（2026-07-13）のため、その比率(8/3)を維持する。
+ */
+const REFERENCE_ANSWER_SEC = 3;
+const REFERENCE_COUNT_MAX = 8;
+/** モードごとの想定解答時間（秒） */
+export const MODE_ASSUMED_ANSWER_SEC: Record<DungeonMode, number> = {
+  hard: 5,
+  easy: 8,
+};
+/** モードごとの敵カウント（秒） */
+export const MODE_COUNT_MAX: Record<DungeonMode, number> = {
+  hard: Math.round((MODE_ASSUMED_ANSWER_SEC.hard * REFERENCE_COUNT_MAX) / REFERENCE_ANSWER_SEC),
+  easy: Math.round((MODE_ASSUMED_ANSWER_SEC.easy * REFERENCE_COUNT_MAX) / REFERENCE_ANSWER_SEC),
+};
+/** イージーモード開始時に配布される先行G（最初の戦闘前にSHOPを利用できる） */
+export const EASY_MODE_STARTING_GOLD = 30;
 /** SHOPが出現する戦闘間隔 */
 export const SHOP_INTERVAL = 2;
 /** そうびの保有上限 */
 export const EQUIPMENT_LIMIT = 3;
 
-export function newRun(): DungeonRun {
+export function newRun(mode: DungeonMode): DungeonRun {
+  const isEasy = mode === 'easy';
   return {
+    mode,
     floor: 1,
     battlesCleared: 0,
     hp: DUNGEON_START.hp,
     maxHp: DUNGEON_START.maxHp,
     atk: DUNGEON_START.atk,
-    gold: DUNGEON_START.gold,
+    gold: isEasy ? EASY_MODE_STARTING_GOLD : DUNGEON_START.gold,
     goldEarned: 0,
     combo: 0,
     equipment: [],
@@ -35,8 +53,8 @@ export function newRun(): DungeonRun {
     defBought: 0,
     healBought: 0,
     nextBattleDoubleDamage: false,
-    phase: 'battle',
-    shopStock: null,
+    phase: isEasy ? 'shop' : 'battle',
+    shopStock: isEasy ? drawShopEquipment([]).map((e) => e.id) : null,
     wrongQuestionIds: [],
     totalCorrect: 0,
     maxCombo: 0,
@@ -53,17 +71,24 @@ export const ENEMY_HP_ACCEL = 0.08;
 export const ENEMY_ATK_BASE = 10;
 export const ENEMY_ATK_SLOPE = 0.2;
 
-export function enemyStats(floor: number): { hp: number; atk: number; countMax: number } {
+export function enemyStats(
+  floor: number,
+  mode: DungeonMode,
+): { hp: number; atk: number; countMax: number } {
   return {
     hp: Math.round(10 * (2 * floor + 2) + ENEMY_HP_ACCEL * (floor - 1) ** 2),
     atk: Math.round(ENEMY_ATK_BASE + ENEMY_ATK_SLOPE * (floor - 1)),
-    countMax: COUNT_MAX,
+    countMax: MODE_COUNT_MAX[mode],
   };
 }
 
 /** 戦闘開始時のカウント初期値（ステッキ常時+1、マグロは初回のみ+10） */
-export function initialCount(equipment: string[], isFirstCountOfBattle: boolean): number {
-  let count = COUNT_MAX;
+export function initialCount(
+  equipment: string[],
+  isFirstCountOfBattle: boolean,
+  mode: DungeonMode,
+): number {
+  let count = MODE_COUNT_MAX[mode];
   if (equipment.includes('n-stick')) count += 1;
   if (isFirstCountOfBattle && equipment.includes('r-tuna')) count += 10;
   return count;
@@ -231,7 +256,7 @@ export function computeIncoming(ctx: DefenseContext): DefenseResult {
     if (ctx.cause === 'miss') {
       waterLost = true; // ミスした瞬間に消える（このダメージは通常計算）
     } else if (ctx.noMissSoFar) {
-      const damage = DUNGEON_START.atk; // 基礎ATKと同じ基準でスケールする固定被ダメ
+      const damage = 1;
       const reflect = has('n-candy') ? Math.round(damage * 0.25) : 0;
       return { damage, reflect, coinUsed: false, waterLost: false };
     }
@@ -250,7 +275,7 @@ export function computeIncoming(ctx: DefenseContext): DefenseResult {
 
 // ===== その他の効果 =====
 
-/** たべのこし: 回答するたびに最大HPの6.25%回復 */
+/** たべのこし: 正解するたびに最大HPの6.25%回復 */
 export function leftoverHeal(equipment: string[], maxHp: number): number {
   return equipment.includes('r-leftover') ? Math.max(1, Math.round(maxHp * 0.0625)) : 0;
 }

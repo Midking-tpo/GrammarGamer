@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { EQUIPMENT } from '../data/equipment';
 import {
+  MODE_COUNT_MAX,
   applyComboGoldBonus,
   attackPrice,
   comboMultiplier,
@@ -47,20 +48,29 @@ function defenseCtx(overrides: Partial<DefenseContext> = {}): DefenseContext {
   };
 }
 
+describe('MODE_COUNT_MAX', () => {
+  it('基準(3秒/countMax8)の比率(8/3)を維持してモード別に敵カウントをスケールする', () => {
+    // hard: 5秒想定 → round(5*8/3)=13, easy: 8秒想定 → round(8*8/3)=21
+    expect(MODE_COUNT_MAX.hard).toBe(13);
+    expect(MODE_COUNT_MAX.easy).toBe(21);
+  });
+});
+
 describe('enemyStats', () => {
-  it('階が進むほどHP/ATKが増える（ATKは緩やかな線形、HPは加速項つき）', () => {
-    expect(enemyStats(1)).toEqual({ hp: 40, atk: 10, countMax: 8 });
-    expect(enemyStats(4)).toEqual({ hp: 101, atk: 11, countMax: 8 });
-    expect(enemyStats(10)).toEqual({ hp: 226, atk: 12, countMax: 8 });
+  it('階が進むほどHP/ATKが増える（ATKは緩やかな線形、HPは加速項つき）。countMaxはモード依存', () => {
+    expect(enemyStats(1, 'hard')).toEqual({ hp: 40, atk: 10, countMax: 13 });
+    expect(enemyStats(4, 'hard')).toEqual({ hp: 101, atk: 11, countMax: 13 });
+    expect(enemyStats(10, 'hard')).toEqual({ hp: 226, atk: 12, countMax: 13 });
+    expect(enemyStats(1, 'easy').countMax).toBe(21);
     for (let f = 1; f < 30; f++) {
-      expect(enemyStats(f + 1).hp).toBeGreaterThan(enemyStats(f).hp);
-      expect(enemyStats(f + 1).atk).toBeGreaterThanOrEqual(enemyStats(f).atk);
+      expect(enemyStats(f + 1, 'hard').hp).toBeGreaterThan(enemyStats(f, 'hard').hp);
+      expect(enemyStats(f + 1, 'hard').atk).toBeGreaterThanOrEqual(enemyStats(f, 'hard').atk);
     }
   });
 
   it('加速項により、HPの増加ペースが階を追うごとに速くなる（線形ではない）', () => {
-    const diffEarly = enemyStats(2).hp - enemyStats(1).hp;
-    const diffLate = enemyStats(30).hp - enemyStats(29).hp;
+    const diffEarly = enemyStats(2, 'hard').hp - enemyStats(1, 'hard').hp;
+    const diffLate = enemyStats(30, 'hard').hp - enemyStats(29, 'hard').hp;
     expect(diffLate).toBeGreaterThan(diffEarly);
   });
 });
@@ -99,12 +109,16 @@ describe('SHOP価格', () => {
 });
 
 describe('initialCount', () => {
-  it('基準8秒 + ステッキ+1 + マグロ初回+10', () => {
-    expect(initialCount([], true)).toBe(8);
-    expect(initialCount(['n-stick'], true)).toBe(9);
-    expect(initialCount(['r-tuna'], true)).toBe(18);
-    expect(initialCount(['r-tuna'], false)).toBe(8); // 2回目以降は効かない
-    expect(initialCount(['n-stick', 'r-tuna'], true)).toBe(19);
+  it('モード基準値 + ステッキ+1 + マグロ初回+10（ハード=13秒基準）', () => {
+    expect(initialCount([], true, 'hard')).toBe(13);
+    expect(initialCount(['n-stick'], true, 'hard')).toBe(14);
+    expect(initialCount(['r-tuna'], true, 'hard')).toBe(23);
+    expect(initialCount(['r-tuna'], false, 'hard')).toBe(13); // 2回目以降は効かない
+    expect(initialCount(['n-stick', 'r-tuna'], true, 'hard')).toBe(24);
+  });
+
+  it('イージーは21秒基準', () => {
+    expect(initialCount([], true, 'easy')).toBe(21);
   });
 });
 
@@ -234,9 +248,9 @@ describe('computeIncoming', () => {
     expect(second.damage).toBe(10);
   });
 
-  it('ノーミスの水: 未ミス中のカウント被弾は基礎ATK分(10)、ミスで消滅', () => {
+  it('ノーミスの水: 未ミス中のカウント被弾は1、ミスですてられる', () => {
     const count = computeIncoming(defenseCtx({ equipment: ['l-water'], noMissSoFar: true }));
-    expect(count.damage).toBe(10);
+    expect(count.damage).toBe(1);
     expect(count.waterLost).toBe(false);
     const miss = computeIncoming(
       defenseCtx({ cause: 'miss', equipment: ['l-water'], noMissSoFar: true }),
@@ -268,14 +282,26 @@ describe('leftoverHeal / jubutsuBackfire / newRun', () => {
     expect(jubutsuBackfire([], () => 0.1)).toBe(false);
   });
 
-  it('newRun: 仕様どおり HP150 / ATK10 / 0G から開始', () => {
-    const run = newRun();
+  it('newRun(hard): 仕様どおり HP150 / ATK10 / 0G / battle開始', () => {
+    const run = newRun('hard');
+    expect(run.mode).toBe('hard');
     expect(run.hp).toBe(150);
     expect(run.maxHp).toBe(150);
     expect(run.atk).toBe(10);
     expect(run.gold).toBe(0);
     expect(run.floor).toBe(1);
     expect(run.equipment).toEqual([]);
+    expect(run.phase).toBe('battle');
+    expect(run.shopStock).toBeNull();
+  });
+
+  it('newRun(easy): 開始時30GでSHOPから始まる', () => {
+    const run = newRun('easy');
+    expect(run.mode).toBe('easy');
+    expect(run.gold).toBe(30);
+    expect(run.phase).toBe('shop');
+    expect(run.shopStock).not.toBeNull();
+    expect(run.shopStock!.length).toBe(3);
   });
 });
 

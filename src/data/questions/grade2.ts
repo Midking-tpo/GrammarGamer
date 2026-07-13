@@ -14,6 +14,9 @@ const future = defineUnit('g2-future', {
     ['「彼女は今週末、祖母を訪ねる予定です」 She is (　) visit her grandmother this weekend.', ['going to', 'go to', 'goes to', 'going'], 0, 'be going to + 動詞の原形 で「〜する予定」。'],
     ['Will you open the door? の意味に近いものは？', ['ドアを開けてくれますか', 'ドアを開けるべきですか', 'ドアを開けてもいいですか', 'ドアが開くでしょうか'], 0, 'Will you ~? は「〜してくれますか」という依頼にも使えるよ。'],
     ['「彼らはパーティーに来るでしょうか」 (　) they come to the party?', ['Will', 'Are', 'Do', 'Did'], 0, '未来の疑問文は Will + 主語 + 動詞の原形?。'],
+    ['「彼らは来年、日本に来る予定です」 They (　) going to come to Japan next year.', ['am', 'is', 'are', 'will'], 2, '主語 They（複数）に合わせて be動詞は are。'],
+    ['「あなたは今夜、何をするつもりですか」 What (　) you going to do tonight?', ['are', 'is', 'am', 'will'], 0, '疑問詞の後ろも are you going to の語順が続くよ。'],
+    ['「私は来週忙しくないでしょう」 I (　) not be busy next week.', ['will', 'am', 'do', 'going'], 0, 'will の否定は will not + 動詞の原形。'],
   ],
   order: [
     ['私は明日、彼に電話します。', ['I', 'will', 'call', 'him', 'tomorrow.'], 'will + 動詞の原形 call の語順。'],
@@ -54,6 +57,9 @@ const modal = defineUnit('g2-modal', {
     ['「〜しましょうか」と申し出るときの表現は？', ['Shall I ~?', 'Must I ~?', 'Should you ~?', 'May you ~?'], 0, 'Shall I ~? で「（私が）〜しましょうか」と申し出るよ。'],
     ['「（いっしょに）〜しませんか」と誘うときの表現は？', ['Shall we ~?', 'Shall I ~?', 'Must we ~?', 'Do we ~?'], 0, 'Shall we ~? は「（いっしょに）〜しましょうか」。Let\'s 〜 とほぼ同じ意味。'],
     ['「それは本当かもしれない」 It (　) be true.', ['may', 'must to', 'should to', 'have to'], 0, 'may には「〜かもしれない」という推量の意味もあるよ。'],
+    ['「私たちは今日、傘を持っていくべきです」 We (　) take an umbrella today.', ['should', 'must not', 'may not', 'can\'t'], 0, 'アドバイスは should（〜すべき）で表すよ。'],
+    ['「彼女は今、家にいないかもしれません」 She (　) not be home now.', ['may', 'must', 'should', 'can'], 0, 'may not で「〜でないかもしれない」という推量の否定。'],
+    ['Must I finish this today? に「いいえ、しなくていいです」と答えるときは？', ['No, you must not.', 'No, you don\'t have to.', 'No, you can\'t.', 'No, you may not.'], 1, '「しなくていい」は No, you don\'t have to. と答えるよ。'],
   ],
   order: [
     ['あなたはここで靴を脱がなければなりません。', ['You', 'must', 'take', 'off', 'your', 'shoes', 'here.'], 'must + 動詞の原形。take off で「脱ぐ」。'],
@@ -94,6 +100,9 @@ const toinf = defineUnit('g2-toinf', {
     ['「彼女は音楽を聞き始めました」 She started (　) to music.', ['to listen', 'listen', 'listens', 'to listening'], 0, 'start to 〜 で「〜し始める」。'],
     ['「何か冷たい飲み物」を英語で言うと？', ['something cold to drink', 'cold something to drink', 'something to drink cold', 'to drink something cold'], 0, 'something + 形容詞 + to + 動詞 の語順に注意！'],
     ['「私には今日やるべき宿題がたくさんあります」 I have a lot of homework (　) today.', ['to do', 'do', 'doing', 'did'], 0, 'homework to do で「やるべき宿題」。形容詞的用法だよ。'],
+    ['「私には読むべき本がたくさんあります」 I have many books (　).', ['to read', 'read', 'reading', 'to reading'], 0, 'books to read で「読むべき本」。形容詞的用法だよ。'],
+    ['「彼はそのニュースを聞いて驚きました」 He was surprised (　) the news.', ['to hear', 'hear', 'hearing', 'heard'], 0, '感情の原因を表す不定詞。「聞いて（驚いた）」。'],
+    ['「泳ぐことは健康に良い」 (　) swim is good for your health.', ['To', 'For', 'At', 'In'], 0, 'To swim（泳ぐこと）が文の主語になっているよ。'],
   ],
   order: [
     ['私は本を読むことが好きです。', ['I', 'like', 'to', 'read', 'books.'], 'like to 〜 で「〜することが好き」。'],
@@ -134,6 +143,9 @@ const gerund = defineUnit('g2-gerund', {
     ['「彼は歌うことが得意です」 He is good at (　).', ['singing', 'sing', 'to sing', 'sang'], 0, '前置詞（at など）の後ろに動詞を置くときは動名詞にするよ。'],
     ['「読書をしてくれてありがとう→来てくれてありがとう」 Thank you for (　).', ['coming', 'come', 'to come', 'came'], 0, '前置詞 for の後ろは動名詞。Thank you for ~ing で「〜してくれてありがとう」。'],
     ['like の使い方で正しい説明は？', ['不定詞も動名詞も使える', '不定詞だけ使える', '動名詞だけ使える', 'どちらも使えない'], 0, 'like は like to play / like playing のどちらもOKだよ。'],
+    ['「彼女はケーキを作ることを楽しみました」 She enjoyed (　) a cake.', ['making', 'to make', 'make', 'made'], 0, 'enjoy の後ろは動名詞（ing形）だけを取るよ。'],
+    ['「私は星を見ることが好きです」 I like (　) at stars.', ['looking', 'look', 'to looking', 'looked'], 0, 'look at 〜 の ing形 looking が「見ること」を表すよ。'],
+    ['「宿題をするのを手伝ってくれてありがとう」 Thank you for (　) me with my homework.', ['helping', 'help', 'to help', 'helped'], 0, '前置詞 for の後ろは動名詞 helping。'],
   ],
   order: [
     ['私は音楽を聞くことが好きです。', ['I', 'like', 'listening', 'to', 'music.'], 'like + 動名詞で「〜することが好き」。'],
@@ -174,6 +186,9 @@ const conj = defineUnit('g2-conj', {
     ['「夕食を食べたあとで、テレビを見ました」 I watched TV (　) I ate dinner.', ['after', 'before', 'if', 'because'], 0, '「〜したあとで」は接続詞 after。'],
     ['「私は彼女が医者だと知っています」 I know (　) she is a doctor.', ['that', 'what', 'who', 'because'], 0, 'know that 〜 で「〜だと知っている」。'],
     ['「急ぎなさい、そうしないと遅れますよ」 Hurry up, (　) you will be late.', ['or', 'and', 'but', 'so'], 0, '命令文, or 〜 で「…しなさい、そうしないと〜」。'],
+    ['「もし忙しくなければ、パーティーに来てください」 (　) you are not busy, please come to the party.', ['If', 'When', 'Because', 'That'], 0, '「もし〜でなければ」も接続詞 if で表せるよ。'],
+    ['「私は疲れていましたが、最後まで走りました」 (　) I was tired, I ran to the end.', ['Though', 'Because', 'If', 'When'], 0, '「〜だけれども」は Though（Although）を使うよ。'],
+    ['「彼が到着したら、私に知らせてください」 Please let me know (　) he arrives.', ['when', 'that', 'because', 'so'], 0, '「〜したら・〜するとき」は接続詞 when。'],
   ],
   order: [
     ['私が電話したとき、彼は寝ていました。', ['When', 'I', 'called', 'him,', 'he', 'was', 'sleeping.'], 'When 〜, ... の形。コンマで区切るよ。'],
@@ -214,6 +229,9 @@ const there = defineUnit('g2-there', {
     ['「壁に絵が1枚かかっています」 There is a picture (　) the wall.', ['on', 'in', 'at', 'under'], 0, '壁など面に接しているときは on を使うよ。'],
     ['How many cats are there in this house? の答え方は？', ['There are two.', 'Yes, there are.', 'They are two.', 'It is two.'], 0, 'How many ~ are there? には There are + 数 で答えるよ。'],
     ['「グラスに水が少しあります」 There (　) some water in the glass.', ['is', 'are', 'am', 'be'], 0, 'water は数えられない名詞なので単数扱いで is。'],
+    ['「動物園にはたくさんの動物がいます」 (　) many animals in the zoo.', ['There is', 'There are', 'They are', 'It is'], 1, 'many animals は複数なので There are。'],
+    ['「この近くにコンビニはありません」 There (　) any convenience store near here.', ['is not', 'are not', 'does not', 'do not'], 0, 'any convenience store は単数扱いなので is not。'],
+    ['「このカップの中にコーヒーはありますか」 (　) any coffee in this cup?', ['Is there', 'Are there', 'Does it have', 'Has there'], 0, 'coffee は数えられない名詞で単数扱い。Is there ~?。'],
   ],
   order: [
     ['いすの下にネコが1匹います。', ['There', 'is', 'a', 'cat', 'under', 'the', 'chair.'], 'There is + 単数の名詞 + 場所 の語順。'],
@@ -254,6 +272,9 @@ const comp = defineUnit('g2-comp', {
     ['big の比較級は？', ['bigger', 'biger', 'more big', 'biggest'], 0, 'big は g を重ねて bigger。短母音 + 子音は子音を重ねるよ。'],
     ['「この問題はあの問題より難しい」 This question is (　) than that one.', ['more difficult', 'difficulter', 'most difficult', 'difficult'], 0, 'difficult は長い単語なので more difficult。'],
     ['「彼はクラスでいちばん速く走ります」 He runs (　) in his class.', ['the fastest', 'the faster', 'fast', 'more fast'], 0, '副詞 fast の最上級 the fastest。「いちばん速く」。'],
+    ['「今日は昨日より暑い」 Today is (　) than yesterday.', ['hot', 'hotter', 'hottest', 'more hot'], 1, 'hot は t を重ねて hotter。短母音+子音は重ねるよ。'],
+    ['「これは店の中でいちばん安いかばんです」 This is the (　) bag in the store.', ['cheap', 'cheaper', 'cheapest', 'more cheap'], 2, '「いちばん安い」は最上級 the cheapest。'],
+    ['「私は音楽ほど映画が好きではありません」 I don\'t like movies (　) music.', ['as much as', 'more than', 'the most', 'better than'], 0, 'not as ~ as で「…ほど〜ではない」という表現。'],
   ],
   order: [
     ['この橋はあの橋より長い。', ['This', 'bridge', 'is', 'longer', 'than', 'that', 'one.'], '比較級 longer + than の語順。'],
@@ -294,6 +315,9 @@ const passive = defineUnit('g2-passive', {
     ['「この本は夏目漱石によって書かれました」', ['This book was written by Natsume Soseki.', 'This book wrote by Natsume Soseki.', 'This book was wrote by Natsume Soseki.', 'This book is writing by Natsume Soseki.'], 0, 'was written by 〜 で「〜によって書かれた」。'],
     ['make の過去分詞は？', ['made', 'maked', 'making', 'makes'], 0, 'make - made - made。過去形と過去分詞が同じ形だよ。'],
     ['「富士山は多くの場所から見られます」 Mt. Fuji can (　) from many places.', ['be seen', 'is seen', 'be see', 'seen'], 0, '助動詞 + 受動態は can be + 過去分詞 の形になるよ。'],
+    ['「これらの車は日本で作られています」 These cars (　) in Japan.', ['is made', 'are made', 'make', 'made'], 1, '主語 These cars（複数）なので are made。'],
+    ['「この本は多くの学生に読まれていますか」正しい疑問文は？', ['Is this book read by many students?', 'Does this book read by many students?', 'Is this book reads by many students?', 'This book is read by many students?'], 0, '受動態の疑問文は be動詞を主語の前に出すよ。'],
+    ['catch の過去分詞は？', ['catched', 'caught', 'catching', 'catches'], 1, 'catch - caught - caught と変化する不規則動詞だよ。'],
   ],
   order: [
     ['この教室は毎日使われています。', ['This', 'classroom', 'is', 'used', 'every', 'day.'], '受動態は be動詞 + 過去分詞 used。'],

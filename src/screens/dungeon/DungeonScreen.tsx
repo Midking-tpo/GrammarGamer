@@ -3,6 +3,8 @@ import { equipmentById } from '../../data/equipment';
 import { badgeById } from '../../game/badges';
 import {
   COMBO_GOLD_BONUS_MULTIPLIER,
+  EASY_MODE_STARTING_GOLD,
+  MODE_ASSUMED_ANSWER_SEC,
   SHOP_INTERVAL,
   attackPrice,
   defensePrice,
@@ -16,7 +18,7 @@ import {
   useProgress,
   type CompleteDungeonPayload,
 } from '../../store/progressStore';
-import type { DungeonRun } from '../../types';
+import type { DungeonMode, DungeonRun } from '../../types';
 import { DungeonBattleView, type BattleOutcome } from './DungeonBattleView';
 import { DungeonShopView } from './DungeonShopView';
 
@@ -26,7 +28,9 @@ function loadRun(): DungeonRun | null {
   try {
     const raw = localStorage.getItem(RUN_KEY);
     if (!raw) return null;
-    return { ...newRun(), ...(JSON.parse(raw) as DungeonRun) };
+    const parsed = JSON.parse(raw) as Partial<DungeonRun>;
+    const mode: DungeonMode = parsed.mode === 'easy' ? 'easy' : 'hard';
+    return { ...newRun(mode), ...parsed };
   } catch {
     return null;
   }
@@ -62,17 +66,56 @@ interface Props {
 
 export function DungeonScreen({ onHome }: Props) {
   const { progress, completeDungeon } = useProgress();
-  const [run, setRun] = useState<DungeonRun>(() => loadRun() ?? newRun());
+  const [run, setRun] = useState<DungeonRun | null>(() => loadRun());
   const [view, setView] = useState<View>(() =>
-    run.phase === 'shop' ? { name: 'shop' } : { name: 'battle' },
+    run?.phase === 'shop' ? { name: 'shop' } : { name: 'battle' },
   );
 
   // ラン永続化（ゲームオーバー後はクリア済みなので触らない）
   useEffect(() => {
-    if (view.name !== 'gameover') {
+    if (run && view.name !== 'gameover') {
       localStorage.setItem(RUN_KEY, JSON.stringify(run));
     }
   }, [run, view]);
+
+  function startRun(mode: DungeonMode) {
+    const fresh = newRun(mode);
+    setRun(fresh);
+    setView(fresh.phase === 'shop' ? { name: 'shop' } : { name: 'battle' });
+  }
+
+  if (!run) {
+    return (
+      <div className="screen dungeon-screen mode-select-screen">
+        <header className="game-header">
+          <button className="btn ghost small" onClick={onHome}>
+            ✕ もどる
+          </button>
+          <span className="game-title">🏰 ダンジョン</span>
+        </header>
+        <h1 className="result-title">むずかしさを選ぼう</h1>
+        <p className="result-unit">1問あたりの回答スピードに合わせて選んでね</p>
+        <div className="mode-select-cards">
+          <button className="mode-card" onClick={() => startRun('easy')}>
+            <span className="mode-card-title">🟢 イージー</span>
+            <span className="mode-card-desc">
+              1問{MODE_ASSUMED_ANSWER_SEC.easy}秒くらいでじっくり考えたい人向け。
+              最初の戦闘の前に{EASY_MODE_STARTING_GOLD}GでSHOPを利用できる。
+            </span>
+          </button>
+          <button className="mode-card" onClick={() => startRun('hard')}>
+            <span className="mode-card-title">🔴 ハード</span>
+            <span className="mode-card-desc">
+              1問{MODE_ASSUMED_ANSWER_SEC.hard}秒くらいでテンポよく答えられる人向け。
+            </span>
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ここから先は run が確定して存在する（null になり得ない）ことを示す別名
+  const activeRun = run;
 
   function endRun(finalRun: DungeonRun, floorReached: number, byJubutsu: boolean) {
     const payload: CompleteDungeonPayload = {
@@ -104,28 +147,28 @@ export function DungeonScreen({ onHome }: Props) {
 
   function handleOutcome(o: BattleOutcome) {
     const merged: DungeonRun = {
-      ...run,
+      ...activeRun,
       equipment: o.equipment,
-      wrongQuestionIds: [...run.wrongQuestionIds, ...o.wrongIds],
-      totalCorrect: run.totalCorrect + o.correctCount,
-      maxCombo: Math.max(run.maxCombo, o.maxComboInBattle),
-      hadNoMissWin: run.hadNoMissWin || (o.won && o.noMiss),
+      wrongQuestionIds: [...activeRun.wrongQuestionIds, ...o.wrongIds],
+      totalCorrect: activeRun.totalCorrect + o.correctCount,
+      maxCombo: Math.max(activeRun.maxCombo, o.maxComboInBattle),
+      hadNoMissWin: activeRun.hadNoMissWin || (o.won && o.noMiss),
     };
 
     if (!o.won) {
-      return endRun(merged, run.floor, false);
+      return endRun(merged, activeRun.floor, false);
     }
 
-    const battlesCleared = run.battlesCleared + 1;
+    const battlesCleared = activeRun.battlesCleared + 1;
     const shopNext = battlesCleared % SHOP_INTERVAL === 0;
     const next: DungeonRun = {
       ...merged,
       hp: o.playerHp,
       combo: 0, // コンボは戦闘毎にリセットする（毎戦闘の10コンボ到達を意味あるものにするため）
-      gold: run.gold + o.goldGained,
-      goldEarned: run.goldEarned + o.goldGained,
+      gold: activeRun.gold + o.goldGained,
+      goldEarned: activeRun.goldEarned + o.goldGained,
       battlesCleared,
-      floor: run.floor + 1,
+      floor: activeRun.floor + 1,
       nextBattleDoubleDamage: o.noMiss && o.equipment.includes('s-iburi'),
       phase: shopNext ? 'shop' : 'battle',
       shopStock: shopNext
@@ -135,13 +178,13 @@ export function DungeonScreen({ onHome }: Props) {
     setRun(next);
 
     if (o.jubutsuDeath) {
-      return endRun(next, run.floor, true);
+      return endRun(next, activeRun.floor, true);
     }
 
     setView({
       name: 'victory',
       info: {
-        floorCleared: run.floor,
+        floorCleared: activeRun.floor,
         goldGained: o.goldGained,
         comboBonus: o.comboBonus,
         noMiss: o.noMiss,
@@ -154,26 +197,30 @@ export function DungeonScreen({ onHome }: Props) {
     setView(info.shopNext ? { name: 'shop' } : { name: 'battle' });
   }
 
-  // ===== SHOP操作（価格・在庫は run に保持） =====
+  // ===== SHOP操作（価格・在庫は activeRun に保持） =====
 
   function buy(cost: number, patch: (r: DungeonRun) => Partial<DungeonRun>) {
-    setRun((r) => (r.gold < cost ? r : { ...r, gold: r.gold - cost, ...patch(r) }));
+    if (activeRun.gold < cost) return;
+    setRun({ ...activeRun, gold: activeRun.gold - cost, ...patch(activeRun) });
   }
 
   const shopHandlers = {
     onBuyAttack: () =>
-      buy(attackPrice(run.atkBought), (r) => ({ atk: r.atk + 20, atkBought: r.atkBought + 1 })),
+      buy(attackPrice(activeRun.atkBought), (r) => ({
+        atk: r.atk + 20,
+        atkBought: r.atkBought + 1,
+      })),
     onBuyDefense: () =>
-      buy(defensePrice(run.defBought), (r) => ({
+      buy(defensePrice(activeRun.defBought), (r) => ({
         maxHp: r.maxHp + 50,
         hp: r.hp + 50,
         defBought: r.defBought + 1,
       })),
     onBuyHeal: () =>
-      buy(healPrice(run.healBought), (r) => ({ hp: r.maxHp, healBought: r.healBought + 1 })),
+      buy(healPrice(activeRun.healBought), (r) => ({ hp: r.maxHp, healBought: r.healBought + 1 })),
     onBuyEquipment: (id: string) => {
       const eq = equipmentById(id);
-      if (!eq || run.equipment.length >= 3) return;
+      if (!eq || activeRun.equipment.length >= 3) return;
       buy(eq.price, (r) => ({
         equipment: [...r.equipment, id],
         shopStock: (r.shopStock ?? []).filter((s) => s !== id),
@@ -181,9 +228,9 @@ export function DungeonScreen({ onHome }: Props) {
       }));
     },
     onDiscardEquipment: (id: string) =>
-      setRun((r) => ({ ...r, equipment: r.equipment.filter((e) => e !== id) })),
+      setRun({ ...activeRun, equipment: activeRun.equipment.filter((e) => e !== id) }),
     onLeave: () => {
-      setRun((r) => ({ ...r, phase: 'battle', shopStock: null }));
+      setRun({ ...activeRun, phase: 'battle', shopStock: null });
       setView({ name: 'battle' });
     },
   };
@@ -192,8 +239,8 @@ export function DungeonScreen({ onHome }: Props) {
     case 'battle':
       return (
         <DungeonBattleView
-          key={`${run.floor}-${run.battlesCleared}`}
-          run={run}
+          key={`${activeRun.floor}-${activeRun.battlesCleared}`}
+          run={activeRun}
           onOutcome={handleOutcome}
           onQuit={onHome}
         />
@@ -210,7 +257,7 @@ export function DungeonScreen({ onHome }: Props) {
             </div>
             <div className="stat">
               <span className="stat-value">
-                {run.hp}/{run.maxHp}
+                {activeRun.hp}/{activeRun.maxHp}
               </span>
               <span className="stat-label">HP（回復しない）</span>
             </div>
@@ -221,7 +268,7 @@ export function DungeonScreen({ onHome }: Props) {
           )}
           <div className="result-actions">
             <button className="btn primary" onClick={() => proceedFromVictory(view.info)} autoFocus>
-              {view.info.shopNext ? '🛒 SHOPへ' : `⬇️ 地下${run.floor}階へ`}
+              {view.info.shopNext ? '🛒 SHOPへ' : `⬇️ 地下${activeRun.floor}階へ`}
             </button>
             <button className="btn" onClick={onHome}>
               🏠 ちゅうだん（続きから再開できる）
@@ -230,7 +277,7 @@ export function DungeonScreen({ onHome }: Props) {
         </div>
       );
     case 'shop':
-      return <DungeonShopView run={run} onQuit={onHome} {...shopHandlers} />;
+      return <DungeonShopView run={activeRun} onQuit={onHome} {...shopHandlers} />;
     case 'gameover': {
       const info = view.info;
       return (
@@ -273,14 +320,7 @@ export function DungeonScreen({ onHome }: Props) {
             </div>
           )}
           <div className="result-actions">
-            <button
-              className="btn primary"
-              onClick={() => {
-                const fresh = newRun();
-                setRun(fresh);
-                setView({ name: 'battle' });
-              }}
-            >
+            <button className="btn primary" onClick={() => startRun(activeRun.mode)}>
               🔁 もう一度挑戦
             </button>
             <button className="btn" onClick={onHome}>

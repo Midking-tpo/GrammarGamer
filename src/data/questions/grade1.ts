@@ -14,6 +14,9 @@ const be = defineUnit('g1-be', {
     ['「これは私のかばんです」 This (　) my bag.', ['am', 'is', 'are', 'be'], 1, 'This / That が主語のときは is を使うよ。'],
     ['「私たちは野球ファンです」 We (　) baseball fans.', ['am', 'is', 'are', 'be'], 2, 'We は複数の主語なので、be動詞は are。'],
     ['be動詞の意味として正しいものは？', ['「〜です・〜にいる」', '「〜する」', '「〜できる」', '「〜したい」'], 0, 'be動詞（am / is / are）は「〜です」「〜にいる・ある」という意味を表すよ。'],
+    ['「今日は晴れています」 It (　) sunny today.', ['am', 'is', 'are', 'be'], 1, '天気を表す文の主語 It は三人称単数なので is を使うよ。'],
+    ['Is this your pen? に「いいえ」と答えるときは？', ['No, this is not.', 'No, it is not.', 'No, this not is.', 'No, I am not.'], 1, '物についての質問には it で答えるよ。No, it is not (isn\'t).'],
+    ['「彼女たちは看護師です」 (　) are nurses.', ['She', 'They', 'He', 'It'], 1, '複数の女性を指す代名詞は They。be動詞は are。'],
   ],
   order: [
     ['私は田中健です。', ['I', 'am', 'Ken', 'Tanaka.'], '「私は〜です」は I am 〜. の語順。'],
@@ -54,6 +57,9 @@ const verb = defineUnit('g1-verb', {
     ['be動詞と一般動詞の文の説明で正しいものは？', ['1つの文に動詞は基本1つ', 'be動詞と一般動詞は必ず両方使う', '疑問文はいつも Are で始める', '否定文はいつも not だけ置く'], 0, '英語の文では動詞は基本1つ。I am play tennis. は間違いだよ。'],
     ['「私は2匹の猫を飼っています」 I (　) two cats.', ['am', 'have', 'has', 'do'], 1, '「飼っている」は have で表すよ。主語 I なので原形のまま。'],
     ['「彼らは日本語を話します」 They (　) Japanese.', ['speak', 'speaks', 'are speak', 'speaking'], 0, '主語 They は複数なので動詞は原形 speak を使うよ。'],
+    ['「私たちは毎週末、公園を走ります」 We (　) in the park every weekend.', ['run', 'runs', 'am run', 'running'], 0, '主語 We のときは動詞は原形のまま run。'],
+    ['「あなたは音楽を聞きますか」正しい疑問文は？', ['Are you listen to music?', 'Do you listen to music?', 'Do you listens to music?', 'You listen to music?'], 1, '一般動詞の疑問文は Do you + 動詞の原形?。'],
+    ['「私はネコを飼っていません」正しい否定文は？', ['I do not has a cat.', 'I do not have a cat.', 'I am not have a cat.', 'I have not a cat.'], 1, '一般動詞の否定文は do not + 動詞の原形 have。'],
   ],
   order: [
     ['私は毎日、英語を勉強します。', ['I', 'study', 'English', 'every', 'day.'], '主語 + 動詞 + 目的語 + 時の表現、の語順だよ。'],
@@ -94,6 +100,9 @@ const wh = defineUnit('g1-wh', {
     ['「あなたは何のスポーツが好きですか」', ['What sport do you like?', 'How sport do you like?', 'Who sport do you like?', 'What do sport you like?'], 0, 'What + 名詞 で「何の〜」。そのあとは疑問文の語順 do you like。'],
     ['「ペンは何本ありますか」 (　) pens do you have?', ['How many', 'How much', 'What many', 'How long'], 0, '数をたずねるときは How many + 複数形の名詞。'],
     ['Whose bag is this? の意味は？', ['これは誰のかばんですか', 'これは何のかばんですか', 'このかばんはどこですか', 'どちらのかばんが好きですか'], 0, 'Whose は「誰の」と持ち主をたずねる疑問詞だよ。'],
+    ['「あなたは何色が好きですか」 (　) color do you like?', ['What', 'Which', 'Who', 'Whose'], 0, '「何の〜」は What + 名詞の形でたずねるよ。'],
+    ['「あなたはどちらの本がほしいですか、これかあれか」 (　) book do you want, this or that?', ['What', 'Which', 'Who', 'How'], 1, '2つの中から選ぶときは Which を使うよ。'],
+    ['How much is this shirt? の意味は？', ['このシャツはいくらですか', 'このシャツは何色ですか', 'このシャツはどこにありますか', 'このシャツは誰のですか'], 0, 'How much ~? は値段をたずねる表現だよ。'],
   ],
   order: [
     ['あなたは朝食に何を食べますか。', ['What', 'do', 'you', 'eat', 'for', 'breakfast?'], '疑問詞 What を先頭に、そのあとは do you 〜? の語順。'],
@@ -134,6 +143,9 @@ const third = defineUnit('g1-3rd', {
     ['Does she like cats? に「いいえ」と答えるときは？', ['No, she does not.', 'No, she do not.', 'No, she is not.', 'No, she not.'], 0, 'Does ~? には does を使って No, she does not (doesn\'t). と答えるよ。'],
     ['動詞に s が付くのはどの文？', ['My brother watches TV.', 'I watches TV.', 'They watches TV.', 'You watches TV.'], 0, '三人称単数の主語（My brother = he）のときだけ動詞に (e)s が付くよ。'],
     ['「エミは毎週日曜日に部屋を掃除します」 Emi (　) her room every Sunday.', ['clean', 'cleans', 'cleaning', 'is clean'], 1, '主語 Emi は三人称単数なので cleans。'],
+    ['「私の兄はギターを弾きます」 My brother (　) the guitar.', ['play', 'plays', 'playing', 'do play'], 1, '主語 My brother は三人称単数なので plays。'],
+    ['wash の三人称単数現在形は？', ['washs', 'washes', 'washies', 'washed'], 1, 'sh で終わる動詞は es を付けるよ。wash → washes。'],
+    ['「トムは日本語を話しません」正しい否定文は？', ['Tom does not speaks Japanese.', 'Tom does not speak Japanese.', 'Tom do not speak Japanese.', 'Tom is not speak Japanese.'], 1, '三人称単数の否定文は does not + 動詞の原形 speak。'],
   ],
   order: [
     ['彼は毎日ピアノを練習します。', ['He', 'practices', 'the', 'piano', 'every', 'day.'], '三人称単数なので動詞は practices になるよ。'],
@@ -174,6 +186,9 @@ const pron = defineUnit('g1-pron', {
     ['「この辞書はあなたのものですか」 Is this dictionary (　)?', ['you', 'your', 'yours', 'you\'re'], 2, '「あなたのもの」は yours。your は後ろに名詞が必要だよ。'],
     ['「それを知っています」 I know (　).', ['it', 'its', 'this', 'that\'s'], 0, 'it は「それを」という目的格としてもそのまま使えるよ。'],
     ['「彼の名前は太郎です」 (　) name is Taro.', ['He', 'His', 'Him', 'He\'s'], 1, '名詞 name の前なので所有格 His。'],
+    ['「これは彼らの犬です」 This is (　) dog.', ['they', 'their', 'them', 'theirs'], 1, '名詞 dog の前なので所有格 their。'],
+    ['「これらの本は私のものです」 These books are (　).', ['I', 'my', 'me', 'mine'], 3, '「私のもの」は所有代名詞 mine の1語で表せるよ。'],
+    ['「彼女に会いたいです」 I want to see (　).', ['she', 'her', 'hers', 'herself'], 1, '動詞の目的語（〜を）は目的格 her。'],
   ],
   order: [
     ['彼女は彼をよく知っています。', ['She', 'knows', 'him', 'well.'], '「彼を」は目的格 him を使うよ。'],
@@ -214,6 +229,9 @@ const prog = defineUnit('g1-prog', {
     ['現在形と現在進行形の違いは？', ['現在形は習慣、進行形は今の動作', '現在形は今の動作、進行形は習慣', '同じ意味', '進行形は過去の動作'], 0, 'I play tennis.（ふだんする）と I am playing tennis.（今している）の違いだよ。'],
     ['Are you studying? に「はい」と答えるときは？', ['Yes, I am.', 'Yes, I do.', 'Yes, I studying.', 'Yes, you are.'], 0, 'be動詞の疑問文なので Yes, I am. と答えるよ。'],
     ['「トムは今、手紙を書いています」 Tom (　) a letter now.', ['is writing', 'is writeing', 'writes', 'writing'], 0, 'write は e を取って writing。be動詞 is を忘れずに。'],
+    ['「彼らは今、宿題をしています」 They (　) their homework now.', ['are doing', 'is doing', 'do', 'doing'], 0, '主語 They（複数）なので are + doing。'],
+    ['「あなたは今、何を食べているのですか」 What (　) you eating now?', ['are', 'is', 'do', 'does'], 0, '疑問詞 What の後ろも進行形の疑問文の語順。主語 you には are。'],
+    ['sit のing形は？', ['siting', 'sitting', 'siteing', 'sits'], 1, 'sit は t を重ねて sitting。短母音+子音字は重ねるよ。'],
   ],
   order: [
     ['私は今、数学を勉強しています。', ['I', 'am', 'studying', 'math', 'now.'], '現在進行形は am + studying の2語セット。'],
@@ -254,6 +272,9 @@ const can = defineUnit('g1-can', {
     ['「私の犬は泳げません」 My dog (　) swim.', ['can\'t', 'don\'t', 'isn\'t', 'doesn\'t'], 0, '「泳げない」は can の否定 can\'t (cannot)。'],
     ['can の文の説明で正しいものは？', ['主語が三人称単数でも can のまま', '主語が三人称単数なら cans になる', 'can の後ろの動詞に s を付ける', 'can は be動詞と一緒に使う'], 0, '助動詞 can は主語によって形が変わらないよ。動詞も原形のまま。'],
     ['「エミはとても上手に料理ができます」', ['Emi can cook very well.', 'Emi cans cook very well.', 'Emi can cooks very well.', 'Emi is can cook very well.'], 0, 'can + 動詞の原形 cook。can に s は付かないよ。'],
+    ['「私たちは日本語で手紙が書けます」 We (　) write letters in Japanese.', ['can', 'cans', 'canning', 'able'], 0, 'can はいつも同じ形。主語が複数でも can のまま。'],
+    ['「あなたのお母さんはスキーができますか」 (　) your mother ski?', ['Can', 'Does', 'Is', 'Do'], 0, 'can の疑問文は Can を主語の前に置くよ。'],
+    ['Can I borrow your umbrella? の意味は？', ['あなたの傘を借りてもいいですか', 'あなたの傘を借りてくれますか', 'あなたは傘を借りられますか', 'あなたの傘は借りられますか'], 0, 'Can I ~? は「〜してもいいですか」と許可を求める表現。'],
   ],
   order: [
     ['私は英語の歌が歌えます。', ['I', 'can', 'sing', 'English', 'songs.'], 'can + 動詞の原形 sing の語順だよ。'],
@@ -294,6 +315,9 @@ const past = defineUnit('g1-past', {
     ['「彼らは昨日、公園にいました」 They (　) in the park yesterday.', ['was', 'were', 'are', 'did'], 1, '主語 They は複数なので、be動詞の過去形は were。'],
     ['study の過去形は？', ['studied', 'studyed', 'studeid', 'studys'], 0, '「子音字 + y」で終わる動詞は y を i に変えて ed を付けるよ。'],
     ['eat の過去形は？', ['eated', 'ate', 'eaten', 'eats'], 1, 'eat は不規則動詞。過去形は ate だよ。'],
+    ['「彼女は先月、新しいくつを買いました」 She (　) new shoes last month.', ['buy', 'buys', 'bought', 'buying'], 2, 'buy の過去形は不規則で bought。'],
+    ['「私たちは昨夜、星を見ませんでした」正しい否定文は？', ['We did not saw stars last night.', 'We did not see stars last night.', 'We do not saw stars last night.', 'We were not see stars last night.'], 1, '過去の否定文は did not + 動詞の原形 see。'],
+    ['「あなたは先週どこにいましたか」 Where (　) you last week?', ['was', 'were', 'did', 'are'], 1, '主語 you のbe動詞の過去形は were。'],
   ],
   order: [
     ['私は昨日、映画を見ました。', ['I', 'watched', 'a', 'movie', 'yesterday.'], '過去形 watched を使い、yesterday は文末に。'],

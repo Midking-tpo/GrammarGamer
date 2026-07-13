@@ -91,6 +91,9 @@ export interface SessionResult {
 
 // ===== ダンジョンモード =====
 
+/** イージー: 1問8秒想定、ハード: 1問5秒想定でバランス調整（COUNT_MAXが変わる） */
+export type DungeonMode = 'easy' | 'hard';
+
 export type Rarity = 'normal' | 'rare' | 'super' | 'legend';
 
 export interface EquipmentDef {
@@ -104,6 +107,7 @@ export interface EquipmentDef {
 
 /** 進行中のラン（別キーで localStorage に保存、敗北でクリア） */
 export interface DungeonRun {
+  mode: DungeonMode;
   floor: number; // 現在の階（1開始）
   battlesCleared: number; // 勝利数（SHOP判定 = %2）
   hp: number;

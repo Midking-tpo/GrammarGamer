@@ -67,7 +67,7 @@ export const EQUIPMENT: EquipmentDef[] = [
     rarity: 'rare',
     price: 100,
     icon: '🍕',
-    description: '回答するたびに体力を最大体力の6.25%分回復する',
+    description: '正解するたびに体力を最大体力の6.25%分回復する',
   },
   {
     id: 'r-poop',
@@ -149,7 +149,7 @@ export const EQUIPMENT: EquipmentDef[] = [
     rarity: 'legend',
     price: 500,
     icon: '💧',
-    description: 'ミスをしていない間、受けるすべてのダメージが10になる。ミスをすると消えてしまう',
+    description: 'ミスをしていない間、受けるすべてのダメージが1になる。ミスをするとすてられてしまう',
   },
 ];
 

@@ -73,7 +73,7 @@ describe('問題データの整合性', () => {
     for (const grade of [1, 2, 3] as Grade[]) {
       const pool = questionsForSummary(grade);
       const units = unitsOfGrade(grade);
-      expect(pool).toHaveLength(units.length * 30); // 8単元×30問
+      expect(pool).toHaveLength(units.length * 33); // 8単元×33問（choice13+order10+fill10）
       const unitIds = new Set(pool.map((q) => q.unitId));
       expect(unitIds.size).toBe(units.length);
       const types = new Set(pool.map((q) => q.type));
@@ -83,7 +83,7 @@ describe('問題データの整合性', () => {
 
   it('ダンジョンの出題プールは全単元の4択問題', () => {
     const pool = dungeonQuestionPool();
-    expect(pool).toHaveLength(UNITS.length * 10); // 24単元×10問
+    expect(pool).toHaveLength(UNITS.length * 13); // 24単元×13問（拡張後）
     expect(pool.every((q) => q.type === 'choice')).toBe(true);
     expect(new Set(pool.map((q) => q.unitId)).size).toBe(UNITS.length);
   });

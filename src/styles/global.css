@@ -750,6 +750,40 @@ button {
   background: transparent;
 }
 
+.mode-select-screen {
+  text-align: center;
+}
+
+.mode-select-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.mode-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+  padding: 14px 16px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+
+.mode-card-title {
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.mode-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
 .dungeon-field {
   background: linear-gradient(180deg, #2c2a4a 0%, #47456b 100%);
   border-color: #574a8c;
@@ -849,6 +883,7 @@ button {
   border-radius: 10px;
   padding: 6px 12px;
   margin-bottom: 4px;
+  min-height: 66px; /* 最大3行ぶんを先取りして確保し、表示時のレイアウトずれを防ぐ */
 }
 
 .event-log p {
